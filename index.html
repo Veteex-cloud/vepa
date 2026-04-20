@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEPA Platform</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif;}
+body{background:#f5f3ef;color:#1a1714;}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0f2340;}
+.login-box{background:#fff;border-radius:8px;padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,.3);}
+.logo{font-family:monospace;font-size:24px;font-weight:700;color:#0f2340;letter-spacing:.1em;}
+.sub{font-size:12px;color:#888;margin-bottom:1.5rem;margin-top:.25rem;}
+.lf{margin-bottom:.75rem;}
+.lf label{display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:#333;}
+.lf input{width:100%;padding:10px;border:1px solid #ccc;border-radius:4px;font-size:14px;}
+.lf input:focus{outline:none;border-color:#0f2340;}
+.pw-wrap{position:relative;}
+.pw-wrap input{padding-right:38px;}
+.pw-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:16px;user-select:none;line-height:1;}
+.btn-login{width:100%;padding:11px;background:#0f2340;color:#fff;border:none;border-radius:4px;font-size:14px;font-weight:600;cursor:pointer;margin-top:.5rem;}
+.btn-login:hover{background:#1a3a6b;}
+#login-err{font-size:12px;margin-top:.5rem;min-height:18px;}
+.forgot{font-size:11px;color:#888;text-align:right;margin-top:.35rem;cursor:pointer;text-decoration:underline;}
+#app{display:none;}
+nav{background:#0f2340;color:#fff;display:flex;align-items:center;gap:1rem;padding:.6rem 1.25rem;position:sticky;top:0;z-index:100;flex-wrap:wrap;}
+.nav-logo{font-family:monospace;font-size:13px;font-weight:700;letter-spacing:.08em;margin-right:.5rem;}
+.tab{padding:6px 14px;border-radius:3px;font-size:12px;cursor:pointer;color:rgba(255,255,255,.6);border:1px solid transparent;background:transparent;}
+.tab:hover{color:#fff;background:rgba(255,255,255,.1);}
+.tab.on{background:#fff;color:#0f2340;font-weight:600;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:.75rem;}
+.nav-user{font-size:11px;font-family:monospace;opacity:.7;}
+.btn-out{padding:4px 10px;border-radius:3px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;font-size:11px;cursor:pointer;}
+.panel{max-width:1100px;margin:0 auto;padding:1.25rem 1rem;}
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;}
+.panel-title{font-family:monospace;font-size:16px;font-weight:600;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin-bottom:1.25rem;}
+.kpi{background:#fff;border:1px solid #e2dfd8;border-radius:4px;padding:.75rem 1rem;}
+.kpi-v{font-family:monospace;font-size:22px;font-weight:700;color:#1a3a6b;}
+.kpi-l{font-size:11px;color:#888;margin-top:2px;}
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem;}
+.filters input,.filters select{padding:7px 9px;border:1px solid #ccc;border-radius:3px;font-size:12px;background:#fff;}
+.tbl-wrap{background:#fff;border:1px solid #ccc;border-radius:4px;overflow:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:#0f2340;color:#fff;padding:8px 10px;font-weight:600;text-align:left;font-family:monospace;font-size:11px;}
+td{padding:8px 10px;border-bottom:1px solid #f0ede8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f7f5f1;}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;font-family:monospace;}
+.b-bozza{background:#e6edf8;color:#1a3a6b;}.b-inviato{background:#fef6e4;color:#7a4800;}
+.b-accettato{background:#e6f4ec;color:#1a5c35;}.b-rifiutato{background:#fcecea;color:#8b1a1a;}
+.btn{padding:5px 12px;border-radius:3px;border:1px solid #ccc;background:#f7f5f1;font-size:11px;cursor:pointer;font-family:inherit;}
+.btn.prim{background:#1a3a6b;color:#fff;border-color:#1a3a6b;}
+.btn.red{color:#8b1a1a;}
+.adm-tabs{display:flex;gap:2px;border-bottom:2px solid #ccc;margin-bottom:1rem;}
+.atab{padding:7px 16px;border-radius:3px 3px 0 0;font-size:12px;cursor:pointer;color:#888;background:transparent;border:none;}
+.atab.on{background:#fff;color:#0f2340;font-weight:600;border:1px solid #ccc;border-bottom:2px solid #fff;margin-bottom:-2px;}
+.asec{display:none;}.asec.on{display:block;}
+.ucard{background:#fff;border:1px solid #ccc;border-radius:3px;padding:.75rem;margin-bottom:.4rem;display:grid;grid-template-columns:1fr 90px 90px 70px 80px;gap:.5rem;align-items:center;}
+.uname{font-weight:600;font-size:13px;}.uemail{font-size:11px;color:#888;font-family:monospace;}
+.rbadge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;font-family:monospace;margin-left:5px;}
+.r-admin{background:#fef6e4;color:#7a4800;}.r-client{background:#e6edf8;color:#1a3a6b;}
+.linput{padding:5px 8px;border:1px solid #ccc;border-radius:3px;font-size:12px;width:100%;font-family:monospace;}
+.lrow{display:grid;grid-template-columns:65px 1fr 100px 75px 45px;gap:.5rem;align-items:center;padding:.4rem 0;border-bottom:1px solid #e2dfd8;}
+.lrow:last-child{border-bottom:none;}
+#loading{display:none;text-align:center;padding:2rem;color:#888;font-family:monospace;font-size:12px;}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.75rem;}
+@media(max-width:600px){.ucard,.form2{grid-template-columns:1fr;}.lrow{grid-template-columns:55px 1fr 80px;}}
+
+input[type=password]::-ms-reveal,
+input[type=password]::-ms-clear,
+input[type=password]::-webkit-credentials-auto-fill-button { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">VEPA</div>
+    <div class="sub">Configuratore vetrate — Portale B2B</div>
+    <div class="lf"><label>Email</label>
+      <input type="email" id="em" placeholder="email@azienda.it" autocomplete="email"
+        onkeydown="if(event.key==='Enter')document.getElementById('pw').focus()">
+    </div>
+    <div class="lf"><label>Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="pw" placeholder="Password" autocomplete="off"
+          onkeydown="if(event.key==='Enter')doLogin()">
+        <span class="pw-eye" id="eye" onclick="togglePw()">&#128065;</span>
+      </div>
+    </div>
+    <button class="btn-login" onclick="doLogin()">Accedi</button>
+    <div id="login-err"></div>
+    <div class="forgot" onclick="doReset()">Password dimenticata?</div>
+  </div>
+</div>
+
+<div id="app">
+  <nav>
+    <div class="nav-logo">VEPA Platform</div>
+    <button class="tab on" id="t-prev" onclick="show('prev')">&#128203; Preventivi</button>
+    <a href="configuratore.html" id="t-conf" class="tab" style="text-decoration:none;">&#9881; Configuratore</a>
+    <button class="tab" id="t-admin" onclick="show('admin')" style="display:none">&#128295; Admin</button>
+    <div class="nav-right">
+      <span class="nav-user" id="nav-info"></span>
+      <button class="btn-out" onclick="doLogout()">Esci</button>
+    </div>
+  </nav>
+
+  <div id="p-prev" class="panel">
+    <div class="panel-header">
+      <div class="panel-title">I miei preventivi</div>
+      <a href="configuratore.html" class="btn prim" style="text-decoration:none;">+ Nuovo preventivo</a>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="filters">
+      <input type="text" id="f-cerca" placeholder="Cerca..." oninput="filtra()">
+      <select id="f-stato" onchange="filtra()">
+        <option value="">Tutti gli stati</option>
+        <option value="bozza">Bozza</option><option value="inviato">Inviato</option>
+        <option value="accettato">Accettato</option><option value="rifiutato">Rifiutato</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table><thead><tr>
+        <th>N.</th><th>Cliente</th><th>Cantiere</th><th>Data</th><th>Totale</th><th>Stato</th><th></th>
+      </tr></thead><tbody id="tbody"></tbody></table>
+    </div>
+    <div id="loading">Caricamento...</div>
+  </div>
+
+  <div id="p-admin" class="panel" style="display:none;">
+    <div class="panel-title" style="margin-bottom:1rem;">Pannello amministrazione</div>
+    <div class="adm-tabs">
+      <button class="atab on" onclick="admTab('ap')">Tutti i preventivi</button>
+      <button class="atab" onclick="admTab('au')">Utenti</button>
+      <button class="atab" onclick="admTab('al')">Listino prezzi</button>
+    </div>
+    <div id="ap" class="asec on">
+      <div class="filters">
+        <input type="text" id="af-cerca" placeholder="Cerca..." oninput="filtraAdm()">
+        <select id="af-stato" onchange="filtraAdm()">
+          <option value="">Tutti gli stati</option>
+          <option value="bozza">Bozza</option><option value="inviato">Inviato</option>
+          <option value="accettato">Accettato</option><option value="rifiutato">Rifiutato</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr>
+          <th>N.</th><th>Azienda</th><th>Cliente</th><th>Cantiere</th><th>Data</th><th>Sconto</th><th>Totale</th><th>Stato</th><th></th>
+        </tr></thead><tbody id="adm-tbody"></tbody></table>
+      </div>
+    </div>
+    <div id="au" class="asec">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <div style="font-weight:600;">Utenti registrati</div>
+        <button class="btn prim" onclick="document.getElementById('new-user-form').style.display=''">+ Invita utente</button>
+      </div>
+      <div id="users-list"></div>
+      <div id="new-user-form" style="display:none;background:#fff;border:1px solid #ccc;border-radius:3px;padding:1rem;margin-top:.75rem;">
+        <div style="font-weight:600;margin-bottom:.5rem;">Nuovo utente B2B</div>
+        <div class="form2">
+          <div class="lf"><label>Email *</label><input type="email" id="nu-em" class="linput"></div>
+          <div class="lf"><label>Azienda</label><input type="text" id="nu-az" class="linput"></div>
+          <div class="lf"><label>Sconto %</label><input type="number" id="nu-sc" class="linput" min="0" max="50" value="0"></div>
+          <div class="lf"><label>Ruolo</label><select id="nu-ru" class="linput">
+            <option value="client">Cliente B2B</option><option value="admin">Admin</option>
+          </select></div>
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+          <button class="btn prim" onclick="mostraIstruzioni()">Mostra istruzioni</button>
+          <button class="btn" onclick="document.getElementById('new-user-form').style.display='none'">Annulla</button>
+        </div>
+        <div id="nu-msg" style="font-size:12px;margin-top:.4rem;min-height:16px;"></div>
+      </div>
+    </div>
+    <div id="al" class="asec">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem;">
+        <div style="font-weight:600;">Prezzi di listino (IVA compresa)</div>
+        <button class="btn prim" onclick="salvaListino()">Salva listino</button>
+      </div>
+      <div style="background:#fff;border:1px solid #ccc;border-radius:3px;padding:.75rem;">
+        <div class="lrow" style="font-size:10px;color:#888;font-weight:600;font-family:monospace;">
+          <div>ID</div><div>Descrizione</div><div>Prezzo €</div><div>Unita</div><div>On</div>
+        </div>
+        <div id="listino-rows"></div>
+      </div>
+      <div id="listino-msg" style="font-size:12px;margin-top:.4rem;min-height:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var SU = 'https://fycbvtrxbldcxvrzfupz.supabase.co';
+var SK = 'sb_publishable_Dziiq6UP2MXxphLaCyX-oA_WwH3orWj';
+var ME = null;
+var ALL = [];
+
+function sf(path, opts) {
+  var sess = JSON.parse(localStorage.getItem('_vs') || 'null');
+  var tok = (sess && sess.access_token) ? sess.access_token : SK;
+  var h = {'Content-Type':'application/json','apikey':SK,'Authorization':'Bearer '+tok};
+  if (opts && opts.headers) Object.assign(h, opts.headers);
+  return fetch(SU + path, Object.assign({}, opts, {headers: h}));
+}
+async function dbGet(t, f) {
+  var url = '/rest/v1/'+t+'?select=*';
+  if (f) Object.keys(f).forEach(function(k){ url += '&'+k+'=eq.'+encodeURIComponent(f[k]); });
+  url += '&order=created_at.desc';
+  return (await sf(url, {})).json();
+}
+async function dbOne(t, f) {
+  var url = '/rest/v1/'+t+'?select=*';
+  if (f) Object.keys(f).forEach(function(k){ url += '&'+k+'=eq.'+encodeURIComponent(f[k]); });
+  return (await sf(url, {headers:{'Accept':'application/vnd.pgrst.object+json'}})).json();
+}
+async function dbUps(t, b) {
+  var r = await sf('/rest/v1/'+t, {method:'POST',headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(b)});
+  return r.ok;
+}
+async function dbPatch(t, b, f) {
+  var url = '/rest/v1/'+t+'?';
+  Object.keys(f).forEach(function(k){ url += k+'=eq.'+encodeURIComponent(f[k])+'&'; });
+  return (await sf(url, {method:'PATCH',headers:{'Prefer':'return=minimal'},body:JSON.stringify(b)})).ok;
+}
+async function dbDel(t, f) {
+  var url = '/rest/v1/'+t+'?';
+  Object.keys(f).forEach(function(k){ url += k+'=eq.'+encodeURIComponent(f[k])+'&'; });
+  return (await sf(url, {method:'DELETE'})).ok;
+}
+
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmt(n){ return (+n||0).toFixed(2).replace('.',','); }
+
+function togglePw() {
+  var f = document.getElementById('pw'), e = document.getElementById('eye');
+  f.type = f.type === 'password' ? 'text' : 'password';
+  e.innerHTML = f.type === 'password' ? '&#128065;' : '&#128584;';
+}
+
+async function doLogin() {
+  var em = document.getElementById('em').value.trim();
+  var pw = document.getElementById('pw').value;
+  var err = document.getElementById('login-err');
+  err.textContent = ''; err.style.color = '#8b1a1a';
+  if (!em || !pw) { err.textContent = 'Inserisci email e password.'; return; }
+  err.style.color = '#666'; err.textContent = 'Accesso in corso...';
+  try {
+    var r = await fetch(SU+'/auth/v1/token?grant_type=password', {
+      method:'POST', headers:{'Content-Type':'application/json','apikey':SK},
+      body: JSON.stringify({email:em, password:pw})
+    });
+    var d = await r.json();
+    if (!r.ok) { err.style.color='#8b1a1a'; err.textContent = d.error_description||d.msg||'Credenziali errate'; return; }
+    localStorage.setItem('_vs', JSON.stringify(d));
+    await loadProfile(d.user.id, d.user.email);
+    showApp();
+  } catch(ex) { err.style.color='#8b1a1a'; err.textContent = 'Errore: '+ex.message; }
+}
+
+async function doLogout() {
+  try { await sf('/auth/v1/logout', {method:'POST'}); } catch(e) {}
+  localStorage.removeItem('_vs'); ME = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+async function doReset() {
+  var em = document.getElementById('em').value.trim();
+  var err = document.getElementById('login-err');
+  if (!em) { err.style.color='#8b1a1a'; err.textContent='Inserisci prima la tua email.'; return; }
+  var r = await fetch(SU+'/auth/v1/recover', {
+    method:'POST', headers:{'Content-Type':'application/json','apikey':SK},
+    body: JSON.stringify({email:em, redirect_to:window.location.href})
+  });
+  err.style.color = r.ok?'#1a5c35':'#8b1a1a';
+  err.textContent = r.ok?'Email inviata! Controlla la posta.':'Errore invio email.';
+}
+
+async function loadProfile(uid, email) {
+  try {
+    var d = await dbOne('profiles', {id:uid});
+    ME = (d && d.id) ? d : {id:uid,email:email,ruolo:'client',sconto_perc:0,azienda:'',referente:''};
+  } catch(e) {
+    ME = {id:uid,email:email,ruolo:'client',sconto_perc:0,azienda:'',referente:''};
+  }
+}
+
+// Auto-login da sessione salvata
+(function() {
+  var sess = JSON.parse(localStorage.getItem('_vs')||'null');
+  if (sess && sess.user && sess.access_token) {
+    loadProfile(sess.user.id, sess.user.email).then(showApp);
+  }
+})();
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('t-admin').style.display = ME.ruolo==='admin' ? '' : 'none';
+  var sc = ME.sconto_perc>0 ? ' (-'+ME.sconto_perc+'%)' : '';
+  document.getElementById('nav-info').textContent = (ME.azienda||ME.email||'')+sc;
+  loadPrev();
+}
+
+function show(p) {
+  ['prev','admin'].forEach(function(x) {
+    document.getElementById('p-'+x).style.display = x===p?'':'none';
+    document.getElementById('t-'+x).classList.toggle('on', x===p);
+  });
+  if (p==='admin') loadAdmin();
+}
+
+// ── PREVENTIVI ────────────────────────────────────
+async function loadPrev() {
+  document.getElementById('loading').style.display = '';
+  document.getElementById('tbody').innerHTML = '';
+  var f = ME.ruolo!=='admin' ? {user_id:ME.id} : null;
+  var data = await dbGet('preventivi', f);
+  document.getElementById('loading').style.display = 'none';
+  ALL = Array.isArray(data) ? data : [];
+  renderPrev(ALL);
+}
+
+function kpi(v,l){ return '<div class="kpi"><div class="kpi-v">'+v+'</div><div class="kpi-l">'+l+'</div></div>'; }
+
+function renderPrev(list) {
+  var tot = list.reduce(function(s,p){return s+(+p.totale||0);},0);
+  document.getElementById('kpis').innerHTML =
+    kpi(list.length,'Totali') +
+    kpi(list.filter(function(p){return p.stato==='inviato';}).length,'Inviati') +
+    kpi(list.filter(function(p){return p.stato==='accettato';}).length,'Accettati') +
+    kpi('€ '+fmt(tot),'Valore');
+  var tb = document.getElementById('tbody');
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#888;">Nessun preventivo.</td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(function(p) {
+    return '<tr>'+
+      '<td style="font-family:monospace;font-size:11px;">'+esc(p.numero)+'</td>'+
+      '<td><b>'+esc(p.cliente)+'</b><br><small style="color:#888;">'+esc(p.azienda)+'</small></td>'+
+      '<td style="font-size:11px;color:#888;">'+esc(p.cantiere)+'</td>'+
+      '<td style="font-family:monospace;font-size:11px;">'+new Date(p.created_at).toLocaleDateString('it-IT')+'</td>'+
+      '<td style="font-family:monospace;font-weight:600;">€ '+fmt(p.totale)+'</td>'+
+      '<td><span class="badge b-'+esc(p.stato||'bozza')+'">'+esc(p.stato||'bozza')+'</span></td>'+
+      '<td style="white-space:nowrap;">'+
+        '<a href="configuratore.html?id='+esc(p.id)+'" class="btn">Apri</a> '+
+        (p.stato==='bozza'||p.stato==='inviato' ?
+          '<button class="btn" style="background:#e85d14;color:#fff;border-color:#e85d14;margin-left:4px;" onclick="inviaFirma(this)" '+
+          'data-id="'+esc(p.id)+'" data-cliente="'+esc(p.cliente||'')+'" '+
+          'data-email="'+esc((p.dati&&p.dati.email)||'')+'" data-tel="'+esc((p.dati&&p.dati.telefono)||'')+'">'+
+          '&#9998; Firma</button> ' : '')+
+        '<select style="padding:3px;font-size:11px;border:1px solid #ccc;border-radius:3px;" onchange="chStato(this)" data-id="'+esc(p.id)+'">'+
+          '<option value="">Stato...</option>'+
+          '<option value="bozza">Bozza</option><option value="inviato">Inviato</option>'+
+          '<option value="accettato">Accettato</option><option value="rifiutato">Rifiutato</option>'+
+        '</select>'+
+      '</td>'+
+      '</tr>';
+  }).join('');
+}
+
+function filtra() {
+  var c = document.getElementById('f-cerca').value.toLowerCase();
+  var s = document.getElementById('f-stato').value;
+  renderPrev(ALL.filter(function(p) {
+    var m = !c||(p.cliente||'').toLowerCase().indexOf(c)>=0||(p.numero||'').toLowerCase().indexOf(c)>=0;
+    return m && (!s||p.stato===s);
+  }));
+}
+
+async function chStato(sel) {
+  var id=sel.dataset.id, s=sel.value;
+  if (!s) return;
+  await dbPatch('preventivi', {stato:s}, {id:id});
+  loadPrev();
+}
+
+// ── ADMIN ─────────────────────────────────────────
+async function loadAdmin() { loadAdmPrev(); loadAdmUsers(); loadAdmListino(); }
+
+function admTab(n) {
+  ['ap','au','al'].forEach(function(t,i) {
+    document.getElementById(t).classList.toggle('on',t===n);
+    document.querySelectorAll('.atab')[i].classList.toggle('on',t===n);
+  });
+}
+
+async function loadAdmPrev() {
+  var data = await dbGet('preventivi', null);
+  if (!Array.isArray(data)) return;
+  ALL = data;
+  var tb = document.getElementById('adm-tbody');
+  tb.innerHTML = data.map(function(p) {
+    return '<tr>'+
+      '<td style="font-family:monospace;font-size:11px;">'+esc(p.numero)+'</td>'+
+      '<td><b>'+esc(p.azienda)+'</b></td>'+
+      '<td>'+esc(p.cliente)+'</td>'+
+      '<td style="font-size:11px;color:#888;">'+esc(p.cantiere)+'</td>'+
+      '<td style="font-family:monospace;font-size:11px;">'+new Date(p.created_at).toLocaleDateString('it-IT')+'</td>'+
+      '<td><span style="background:#fdf3dc;color:#8b6914;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700;">'+(+p.sconto_perc||0)+'%</span></td>'+
+      '<td style="font-family:monospace;font-weight:600;">€ '+fmt(p.totale)+'</td>'+
+      '<td><span class="badge b-'+esc(p.stato||'bozza')+'">'+esc(p.stato||'bozza')+'</span></td>'+
+      '<td>'+
+      '<a href="configuratore.html?id='+esc(p.id)+'" class="btn">Apri</a> '+
+      (p.stato==='bozza'||p.stato==='inviato' ? 
+        '<button class="btn" style="background:#e85d14;color:#fff;border-color:#e85d14;margin-left:4px;" onclick="inviaFirma(this)" data-id="'+esc(p.id)+'" data-cliente="'+esc(p.cliente||'')+'" data-email="'+esc((p.dati&&p.dati.email)||'')+'" data-tel="'+esc((p.dati&&p.dati.telefono)||'')+'" data-importo="'+esc(p.totale||0)+'">&#9998; Firma</button>' : '')+
+        '<button class="btn red" onclick="delPrev(this)" data-id="'+esc(p.id)+'">&#128465;</button></td>'+
+      '</tr>';
+  }).join('');
+}
+
+function filtraAdm() {
+  var c = document.getElementById('af-cerca').value.toLowerCase();
+  var s = document.getElementById('af-stato').value;
+  var rows = document.querySelectorAll('#adm-tbody tr');
+  rows.forEach(function(r){
+    var txt = r.textContent.toLowerCase();
+    var stato = r.querySelector('.badge') ? r.querySelector('.badge').textContent : '';
+    r.style.display = (!c||txt.indexOf(c)>=0) && (!s||stato===s) ? '' : 'none';
+  });
+}
+
+async function delPrev(btn) {
+  if (!confirm('Eliminare?')) return;
+  await dbDel('preventivi', {id:btn.dataset.id});
+  loadAdmPrev();
+}
+
+async function loadAdmUsers() {
+  var data = await dbGet('profiles', null);
+  if (!Array.isArray(data)) return;
+  document.getElementById('users-list').innerHTML = data.map(function(u) {
+    return '<div class="ucard">'+
+      '<div><div class="uname">'+esc(u.azienda||u.email||'')+'<span class="rbadge r-'+u.ruolo+'">'+u.ruolo+'</span></div>'+
+        '<div class="uemail">'+esc(u.email||'')+'</div></div>'+
+      '<div><label style="font-size:10px;display:block;">Sconto %</label>'+
+        '<input type="number" id="sc-'+u.id+'" value="'+(+u.sconto_perc||0)+'" min="0" max="50" step="0.5" style="width:70px;padding:4px;border:1px solid #ccc;border-radius:3px;font-size:12px;"></div>'+
+      '<div><label style="font-size:10px;display:block;">Ruolo</label>'+
+        '<select id="ru-'+u.id+'" style="padding:5px;border:1px solid #ccc;border-radius:3px;font-size:12px;">'+
+          '<option value="client" '+(u.ruolo==='client'?'selected':'')+'>Cliente</option>'+
+          '<option value="admin" '+(u.ruolo==='admin'?'selected':'')+'>Admin</option>'+
+        '</select></div>'+
+      '<div><button class="btn prim" onclick="saveUser(this)" data-id="'+u.id+'">Salva</button></div>'+
+      '<div><button class="btn" onclick="toggleUser(this)" data-id="'+u.id+'" data-attivo="'+(u.attivo===false?'0':'1')+'">'+
+        (u.attivo===false?'Attiva':'Disattiva')+'</button></div>'+
+      '</div>';
+  }).join('');
+}
+
+async function saveUser(btn) {
+  var id=btn.dataset.id;
+  var sc=+(document.getElementById('sc-'+id).value||0);
+  var ru=document.getElementById('ru-'+id).value;
+  await dbPatch('profiles',{sconto_perc:sc,ruolo:ru},{id:id});
+  loadAdmUsers();
+}
+
+async function toggleUser(btn) {
+  var id=btn.dataset.id, attiva=btn.dataset.attivo==='0';
+  await dbPatch('profiles',{attivo:attiva},{id:id});
+  loadAdmUsers();
+}
+
+function mostraIstruzioni() {
+  var em=document.getElementById('nu-em').value.trim();
+  var sc=document.getElementById('nu-sc').value;
+  var ru=document.getElementById('nu-ru').value;
+  var msg=document.getElementById('nu-msg');
+  if (!em) { msg.style.color='#8b1a1a'; msg.textContent='Email obbligatoria.'; return; }
+  msg.style.color='#1a5c35';
+  msg.innerHTML='Vai su <b>Supabase &rarr; Auth &rarr; Users &rarr; Add user</b>, inserisci <b>'+esc(em)+'</b>. Poi qui imposta sconto='+sc+'% e ruolo='+ru+'.';
+}
+
+async function loadAdmListino() {
+  var data = await dbGet('listino', null);
+  if (!Array.isArray(data)) return;
+  document.getElementById('listino-rows').innerHTML = data.map(function(r) {
+    return '<div class="lrow">'+
+      '<div style="font-family:monospace;font-size:11px;font-weight:600;color:#1a3a6b;">'+r.id+'</div>'+
+      '<div style="font-size:12px;">'+esc(r.descrizione)+'</div>'+
+      '<div><input type="number" class="linput" id="lp-'+r.id+'" value="'+r.prezzo+'" step="0.5" min="0"></div>'+
+      '<div style="font-size:11px;color:#888;">'+esc(r.unita||'')+'</div>'+
+      '<div><input type="checkbox" id="la-'+r.id+'" '+(r.attivo?'checked':'')+'></div>'+
+      '</div>';
+  }).join('');
+}
+
+async function salvaListino() {
+  var msg=document.getElementById('listino-msg');
+  msg.style.color='#666'; msg.textContent='Salvataggio...';
+  var ids=['IMP','SCO','TRV','BNC','FIS','ANG','ANT','DAP','POM','SER','SMT','SMC','SPT','SPC','P4','P5','MIN'];
+  for (var i=0;i<ids.length;i++) {
+    var id=ids[i];
+    if (!document.getElementById('lp-'+id)) continue;
+    await dbPatch('listino',{
+      prezzo:+(document.getElementById('lp-'+id).value||0),
+      attivo:!!(document.getElementById('la-'+id)&&document.getElementById('la-'+id).checked)
+    },{id:id});
+  }
+  msg.style.color='#1a5c35'; msg.textContent='Aggiornato!';
+  setTimeout(function(){msg.textContent='';},3000);
+}
+
+
+
+function chiediDatiCliente(nome, emailDefault, telDefault) {
+  return new Promise(function(resolve) {
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:8px;padding:2rem;max-width:400px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+        <div style="font-weight:600;font-size:15px;margin-bottom:1rem;">Dati cliente per la firma</div>
+        <div style="font-size:13px;color:#666;margin-bottom:1rem;">Inserisci email e telefono di <b>${nome||'Cliente'}</b> per inviare il contratto da firmare.</div>
+        <div style="margin-bottom:.75rem;">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Email *</label>
+          <input type="email" id="ys-email" value="${emailDefault||''}" placeholder="email@cliente.it"
+            style="width:100%;padding:9px;border:1px solid #ccc;border-radius:4px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Telefono (per OTP SMS) *</label>
+          <input type="tel" id="ys-tel" value="${telDefault||''}" placeholder="+39 333 1234567"
+            style="width:100%;padding:9px;border:1px solid #ccc;border-radius:4px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:1rem;">Il cliente riceverà un'email con il link per firmare. Un SMS con codice OTP verrà inviato al momento della firma.</div>
+        <div style="display:flex;gap:.5rem;">
+          <button id="ys-ok" style="flex:1;padding:10px;background:#e85d14;color:#fff;border:none;border-radius:4px;font-size:14px;cursor:pointer;font-weight:600;">Invia contratto</button>
+          <button id="ys-cancel" style="padding:10px 16px;border:1px solid #ccc;background:#fff;border-radius:4px;font-size:14px;cursor:pointer;">Annulla</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    document.getElementById('ys-ok').onclick = function() {
+      var em = document.getElementById('ys-email').value.trim();
+      var tl = document.getElementById('ys-tel').value.trim();
+      if (!em || !tl) { alert('Email e telefono obbligatori'); return; }
+      document.body.removeChild(overlay);
+      resolve({email:em, tel:tl});
+    };
+    document.getElementById('ys-cancel').onclick = function() {
+      document.body.removeChild(overlay);
+      resolve(null);
+    };
+  });
+}
+
+async function generaPDFBase64(prev) {
+  // Genera HTML del contratto e lo converte in PDF via print
+  // Il PDF viene generato client-side usando la stessa logica del configuratore
+  // e inviato a Yousign come base64
+  
+  var d = prev.dati || {};
+  var lista = d.lista || [];
+  
+  // Calcola elementi
+  var elementi = lista.map(function(e) {
+    return {
+      desc: e.nome || e.desc || 'Elemento',
+      importo: e.subtot ? e.subtot.toFixed(2).replace('.',',') : '0,00'
+    };
+  });
+
+  var totale = prev.totale || 0;
+  var acconto = (totale * 0.5).toFixed(2).replace('.',',');
+  var totStr = totale.toFixed(2).replace('.',',');
+
+  // Crea HTML del contratto
+  var html = generaHTMLContratto({
+    nome: d.cliente || prev.cliente || '',
+    cognome: '',
+    email: d.email || '',
+    telefono: d.telefono || '',
+    indirizzo: '',
+    citta: d.cantiere || '',
+    cap: '',
+    cod_fisc: '',
+    preventivo_n: prev.numero || '',
+    data: d.data || new Date().toLocaleDateString('it-IT'),
+    importo_totale: totStr,
+    acconto: acconto,
+    saldo: acconto,
+    elementi: elementi,
+    note: d.note || ''
+  });
+
+  // Converte HTML in PDF base64 usando html2pdf.js caricato dinamicamente
+  return new Promise(function(resolve, reject) {
+    // Carica html2pdf se non presente
+    if (typeof html2pdf === 'undefined') {
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+      script.onload = function() { convertToPDF(html, resolve, reject); };
+      script.onerror = function() { reject(new Error('html2pdf non disponibile')); };
+      document.head.appendChild(script);
+    } else {
+      convertToPDF(html, resolve, reject);
+    }
+  });
+}
+
+function convertToPDF(html, resolve, reject) {
+  var container = document.createElement('div');
+  container.style.cssText = 'position:absolute;left:-9999px;top:0;width:210mm;';
+  container.innerHTML = html;
+  document.body.appendChild(container);
+  
+  html2pdf().set({
+    margin: [10,10,10,10],
+    filename: 'contratto.pdf',
+    image: {type:'jpeg',quality:0.95},
+    html2canvas: {scale:2},
+    jsPDF: {unit:'mm',format:'a4',orientation:'portrait'}
+  }).from(container).outputPdf('arraybuffer').then(function(buffer) {
+    document.body.removeChild(container);
+    var bytes = new Uint8Array(buffer);
+    var binary = '';
+    bytes.forEach(function(b){ binary += String.fromCharCode(b); });
+    resolve(btoa(binary));
+  }).catch(function(e) {
+    document.body.removeChild(container);
+    reject(e);
+  });
+}
+
+async function creaRichiestaFirma(prev, pdfBase64, email, tel, nomeCliente) {
+  var sess = JSON.parse(localStorage.getItem('_vs')||'null');
+  if (!sess) return null;
+
+  // Usa Supabase come proxy per chiamare Yousign
+  // (la chiave Yousign non può stare nel frontend in produzione)
+  // Per ora la chiamata è diretta dal frontend (sandbox)
+  
+  try {
+    // Step 1: Crea signature request
+    var srResp = await fetch(YS_URL + '/signature_requests', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+YS_KEY},
+      body: JSON.stringify({
+        name: 'Contratto B4C - ' + (prev.numero||'') + ' - ' + (nomeCliente||'Cliente'),
+        delivery_mode: 'email',
+        timezone: 'Europe/Rome',
+        audit_trail_locale: 'it',
+        signers_allowed_to_decline: true,
+        email_notification: {
+          sender: {type:'organization'},
+          custom_note: 'Gentile Cliente, in allegato il contratto di fornitura B4C S.r.l. da firmare. Utilizzi il codice OTP che ricevera via SMS per completare la firma.'
+        }
+      })
+    });
+    if (!srResp.ok) throw new Error('Errore creazione signature request: ' + await srResp.text());
+    var sr = await srResp.json();
+
+    // Step 2: Carica il documento
+    var docResp = await fetch(YS_URL + '/signature_requests/' + sr.id + '/documents', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+YS_KEY},
+      body: JSON.stringify({
+        nature: 'signable_document',
+        content: pdfBase64,
+        filename: 'Contratto_B4C_' + (prev.numero||'001') + '.pdf'
+      })
+    });
+    if (!docResp.ok) throw new Error('Errore caricamento documento: ' + await docResp.text());
+    var doc = await docResp.json();
+
+    // Step 3: Aggiunge il firmatario
+    var nomiArr = (nomeCliente||'Cliente').split(' ');
+    var signerResp = await fetch(YS_URL + '/signature_requests/' + sr.id + '/signers', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+YS_KEY},
+      body: JSON.stringify({
+        info: {
+          first_name: nomiArr[0] || 'Cliente',
+          last_name: nomiArr.slice(1).join(' ') || 'B4C',
+          email: email,
+          phone_number: tel.replace(/\s/g,'').replace(/^00/,'+')
+        },
+        signature_level: 'electronic_signature',
+        signature_authentication_mode: 'otp_sms',
+        fields: [{
+          document_id: doc.id,
+          type: 'signature',
+          page: 1,
+          x: 40, y: 700,
+          width: 150, height: 50
+        }]
+      })
+    });
+    if (!signerResp.ok) throw new Error('Errore aggiunta firmatario: ' + await signerResp.text());
+
+    // Step 4: Attiva la richiesta
+    var activateResp = await fetch(YS_URL + '/signature_requests/' + sr.id + '/activate', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Authorization':'Bearer '+YS_KEY},
+      body: '{}'
+    });
+    if (!activateResp.ok) throw new Error('Errore attivazione: ' + await activateResp.text());
+
+    return sr;
+  } catch(e) {
+    console.error('Yousign error:', e);
+    throw e;
+  }
+}
+
+function generaHTMLContratto(c) {
+  var elementiHTML = c.elementi.map(function(e,i) {
+    return '<tr style="background:'+(i%2?'#f5f3ef':'#fff')+'"><td style="padding:6px 10px;border:1px solid #ddd;">'+(i+1)+'</td><td style="padding:6px 10px;border:1px solid #ddd;">'+e.desc+'</td><td style="padding:6px 10px;border:1px solid #ddd;text-align:right;">'+e.importo+'</td></tr>';
+  }).join('');
+  
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>body{font-family:Arial,sans-serif;font-size:9pt;color:#333;margin:0;padding:0;}
+  h1{font-size:14pt;color:#e85d14;}h2{font-size:10pt;color:#3a3a3a;border-bottom:1px solid #e85d14;padding-bottom:3px;margin-top:12px;}
+  table{width:100%;border-collapse:collapse;}td,th{padding:5px 8px;}
+  .header{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #e85d14;padding-bottom:10px;margin-bottom:12px;}
+  .firma-box{border:1px solid #ccc;padding:10px;height:50px;margin-top:5px;}
+  .legal{font-size:7.5pt;color:#555;line-height:1.4;}
+  .highlight{background:#fff3ed;border-left:3px solid #e85d14;padding:6px 10px;margin:6px 0;}
+  </style></head><body>
+  <div class="header">
+    <div><h1>B4C S.r.l.</h1><div style="font-size:8pt;color:#666;">Via Antonio Taramelli 6, 07100 Sassari (SS)<br>P.IVA 03043140908 · REA SS-225244<br>info@b4csrl.it · 392 804 4944</div></div>
+    <div style="text-align:right;background:#3a3a3a;color:#fff;padding:10px 16px;border-radius:4px;">
+      <div style="font-weight:bold;font-size:11pt;">CONTRATTO DI FORNITURA</div>
+      <div style="font-size:9pt;">N° ${c.preventivo_n} del ${c.data}</div>
+    </div>
+  </div>
+  
+  <h2>DATI CLIENTE</h2>
+  <table style="border:1px solid #ddd;">
+    <tr><td style="background:#f5f5f5;font-weight:bold;width:120px;">Nominativo</td><td>${c.cognome} ${c.nome}</td><td style="background:#f5f5f5;font-weight:bold;width:120px;">Cod. Fiscale</td><td>${c.cod_fisc}</td></tr>
+    <tr><td style="background:#f5f5f5;font-weight:bold;">Indirizzo</td><td>${c.indirizzo}</td><td style="background:#f5f5f5;font-weight:bold;">CAP / Città</td><td>${c.cap} ${c.citta}</td></tr>
+    <tr><td style="background:#f5f5f5;font-weight:bold;">Email</td><td>${c.email}</td><td style="background:#f5f5f5;font-weight:bold;">Telefono</td><td>${c.telefono}</td></tr>
+  </table>
+
+  <h2>OGGETTO DELLA FORNITURA</h2>
+  <table style="border:1px solid #ddd;">
+    <thead><tr style="background:#3a3a3a;color:#fff;"><th style="padding:6px 10px;border:1px solid #555;text-align:left;">N°</th><th style="padding:6px 10px;border:1px solid #555;text-align:left;">Descrizione</th><th style="padding:6px 10px;border:1px solid #555;text-align:right;">Importo €</th></tr></thead>
+    <tbody>${elementiHTML}</tbody>
+  </table>
+  <div style="margin-top:8px;padding:8px;background:#fff3ed;border:1px solid #e85d14;border-radius:3px;">
+    <table style="width:100%;"><tr>
+      <td><strong>IMPORTO TOTALE IVA INCLUSA: € ${c.importo_totale}</strong></td>
+      <td>Acconto 50%: € ${c.acconto}</td>
+      <td>Saldo 50%: € ${c.saldo}</td>
+    </tr></table>
+    <div style="font-size:8pt;margin-top:4px;">Pagamento: Bonifico bancario — B4C S.r.l. — IBAN IT85 F030 3284 8900 1000 1166 358 (CREDEM)</div>
+  </div>
+  
+  <h2>CONDIZIONI GENERALI</h2>
+  <div class="legal">
+    <p><strong>Art.01 — PERFEZIONAMENTO DEL CONTRATTO:</strong> Il contratto si perfeziona con la sottoscrizione del Cliente. Approvazione B4C S.r.l. mediante emissione fattura di acconto.</p>
+    <p class="highlight"><strong>Art.02 — ESCLUSIONE DIRITTO DI RECESSO — BENI SU MISURA:</strong> I beni sono realizzati su misura su specifiche indicazioni del Cliente. Ai sensi dell'art. 59, comma 1, lett. c) D.Lgs. 206/2005 (Codice del Consumo), <strong>il diritto di recesso non si applica ai beni confezionati su misura o chiaramente personalizzati.</strong> Il Cliente, preso atto di tale esclusione e dei termini di consegna, chiede espressamente l'avvio immediato della produzione contestualmente alla firma, rinunciando al termine di 14 giorni previsto per contratti negoziati fuori dai locali commerciali (art. 52 D.Lgs. 206/2005).</p>
+    <p><strong>Art.03 — TRASPORTO:</strong> Franco destino Cliente, a carico di B4C S.r.l. fino alla consegna.</p>
+    <p><strong>Art.04 — CONSEGNA:</strong> 60 giorni lavorativi dalla firma del progetto esecutivo. Esclusi: 07–31 Agosto; 20–31 Dicembre; 01–12 Gennaio. Ritardo &gt;60gg: mora 1%/mese, max 3%.</p>
+    <p><strong>Art.05 — PAGAMENTI:</strong> 50% acconto + 50% saldo ad avviso merce pronta. Mancato pagamento: risoluzione contratto artt. 1456–1458 c.c. + interessi mora D.Lgs. 231/2002.</p>
+    <p><strong>Art.06 — RISERVA DI PROPRIETÀ:</strong> Proprietà trasferita solo con pagamento integrale.</p>
+    <p><strong>Art.07 — GARANZIA:</strong> 2 anni (persone fisiche) / 1 anno (persone giuridiche) dalla fattura finale, solo difetti di materiali o costruzione.</p>
+    <p><strong>Art.08 — FIRMA ELETTRONICA:</strong> Sottoscrizione con FEA ai sensi D.Lgs. 82/2005 (CAD) e Reg. UE 910/2014 (eIDAS). Firma OTP via SMS ha piena validità legale.</p>
+    <p><strong>Art.09 — FORO COMPETENTE:</strong> Tribunale Ordinario di Sassari.</p>
+    <p><strong>Art.10 — PRIVACY:</strong> Trattamento dati ai sensi GDPR 2016/679 e D.Lgs. 196/2003. Titolare: B4C S.r.l.</p>
+  </div>
+  
+  <div style="margin-top:12px;padding:8px;border:1px solid #e85d14;border-radius:3px;background:#fff3ed;">
+    <strong style="font-size:8.5pt;">Approvazione specifica artt. 1341–1342 c.c.</strong><br>
+    <span style="font-size:8pt;">Il Cliente approva espressamente: Art.02 (esclusione recesso e rinuncia 14gg), Art.04 (consegna), Art.05 (pagamenti/risoluzione), Art.06 (riserva proprietà), Art.07 (garanzia), Art.09 (foro Sassari).</span>
+  </div>
+
+  <table style="width:100%;margin-top:16px;border-collapse:collapse;">
+    <tr>
+      <td style="width:33%;border:1px solid #ccc;padding:8px;vertical-align:top;">
+        <div style="font-weight:bold;font-size:8.5pt;margin-bottom:4px;">Firma Cliente — Accettazione integrale</div>
+        <div class="firma-box"></div>
+        <div style="font-size:8pt;margin-top:4px;">Data: ___/___/_______</div>
+      </td>
+      <td style="width:33%;border:1px solid #ccc;padding:8px;vertical-align:top;">
+        <div style="font-weight:bold;font-size:8.5pt;margin-bottom:4px;">Firma Cliente — Artt. 1341/1342 c.c.</div>
+        <div class="firma-box"></div>
+        <div style="font-size:8pt;margin-top:4px;">Data: ___/___/_______</div>
+      </td>
+      <td style="width:33%;border:1px solid #ccc;padding:8px;vertical-align:top;">
+        <div style="font-weight:bold;font-size:8.5pt;margin-bottom:4px;">Il Consulente B4C S.r.l.</div>
+        <div class="firma-box"></div>
+        <div style="font-size:8pt;margin-top:4px;">Data: ___/___/_______</div>
+      </td>
+    </tr>
+  </table>
+  
+  <div style="margin-top:10px;font-size:7pt;color:#999;text-align:center;border-top:1px solid #ddd;padding-top:6px;">
+    B4C S.r.l. · Via Antonio Taramelli 6, 07100 Sassari (SS) · P.IVA 03043140908 · info@b4csrl.it · IBAN IT85 F030 3284 8900 1000 1166 358 (CREDEM)
+  </div>
+  </body></html>`;
+}
+
+
+// ── OPENAPI.IT FIRMA ELETTRONICA ────────────────────
+var OA_KEY = 'gyrhaliixidv9eq3au8zcjicgxwn8oq9';
+var OA_URL = 'https://test.esign.openapi.com'; // sandbox — cambia con 'https://esign.openapi.com' per produzione
+
+async function inviaFirma(btn) {
+  var id      = btn.dataset.id;
+  var cliente = btn.dataset.cliente;
+  var email   = btn.dataset.email;
+  var tel     = btn.dataset.tel;
+
+  // Se mancano email o telefono chiedi
+  if (!email || !tel) {
+    var info = await chiediDatiCliente(cliente, email, tel);
+    if (!info) return;
+    email = info.email; tel = info.tel;
+    // Salva nel preventivo
+    var prev = await dbOne('preventivi', {id:id});
+    if (prev) await dbPatch('preventivi', {
+      dati: Object.assign(prev.dati||{}, {email:email, telefono:tel})
+    }, {id:id});
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Invio...';
+
+  try {
+    var prev = await dbOne('preventivi', {id:id});
+    if (!prev) throw new Error('Preventivo non trovato');
+
+    // 1. Genera PDF come base64
+    var pdfB64 = await generaPDFBase64(prev);
+
+    // 2. Crea richiesta firma su OpenAPI.it
+    var sigId = await creaFirmaOpenAPI(prev, pdfB64, email, tel, cliente);
+
+    // 3. Aggiorna stato
+    await dbPatch('preventivi', {
+      stato: 'inviato',
+      dati: Object.assign(prev.dati||{}, {
+        openapi_firma_id: sigId,
+        email: email, telefono: tel
+      })
+    }, {id:id});
+
+    btn.textContent = '✓ Inviato!';
+    btn.style.background = '#1a5c35';
+    setTimeout(function(){ loadPrev(); }, 1500);
+
+  } catch(e) {
+    console.error(e);
+    alert('Errore invio firma: ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = '&#9998; Firma';
+  }
+}
+
+async function creaFirmaOpenAPI(prev, pdfB64, email, tel, nomeCliente) {
+  // Normalizza telefono in formato +39...
+  var phone = tel.replace(/\s/g,'');
+  if (!phone.startsWith('+')) phone = '+39' + phone.replace(/^0/,'');
+
+  var nomi = (nomeCliente||'Cliente').split(' ');
+  var nome    = nomi[0] || 'Cliente';
+  var cognome = nomi.slice(1).join(' ') || 'B4C';
+
+  var payload = {
+    document: {
+      sourceType: 'base64',
+      source: pdfB64,
+      fileName: 'Contratto_B4C_' + (prev.numero||'001') + '.pdf'
+    },
+    signers: [{
+      name: nome,
+      surname: cognome,
+      email: email,
+      mobile: phone,
+      authentication: ['otp_sms'],
+      message: 'Gentile ' + nome + ', Le inviamo il contratto B4C S.r.l. da firmare. Utilizzera un codice OTP via SMS per completare la firma.',
+      signatures: [{
+        page: 1,
+        x: 40,
+        y: 680,
+        width: 150,
+        height: 50
+      }]
+    }],
+    options: {
+      notificationEmail: true,
+      signatureType: 'pades',
+      completionRedirectUrl: 'https://veteex-cloud.github.io/vepa',
+      branding: {
+        companyName: 'B4C S.r.l.',
+        primaryColor: '#E85D14'
+      }
+    }
+  };
+
+  var resp = await fetch(OA_URL + '/EU-SES', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + OA_KEY
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!resp.ok) {
+    var err = await resp.json().catch(function(){ return {}; });
+    throw new Error(err.message || 'Errore OpenAPI ' + resp.status);
+  }
+
+  var data = await resp.json();
+  return data.data && data.data.id;
+}
+
+function chiediDatiCliente(nome, emailDef, telDef) {
+  return new Promise(function(resolve) {
+    var ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+    ov.innerHTML = `
+      <div style="background:#fff;border-radius:8px;padding:2rem;max-width:400px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+        <div style="font-weight:600;font-size:15px;margin-bottom:.5rem;">Dati cliente per la firma</div>
+        <div style="font-size:12px;color:#666;margin-bottom:1rem;">Email e telefono di <b>${nome||'Cliente'}</b> per inviare il contratto.</div>
+        <div style="margin-bottom:.75rem;">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Email *</label>
+          <input type="email" id="ys-em" value="${emailDef||''}" placeholder="email@cliente.it"
+            style="width:100%;padding:9px;border:1px solid #ccc;border-radius:4px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Telefono (OTP SMS) *</label>
+          <input type="tel" id="ys-tel" value="${telDef||''}" placeholder="+39 333 1234567"
+            style="width:100%;padding:9px;border:1px solid #ccc;border-radius:4px;font-size:14px;box-sizing:border-box;">
+        </div>
+        <div style="font-size:11px;color:#888;margin-bottom:1rem;">Il cliente riceve email con link firma + SMS con codice OTP.</div>
+        <div style="display:flex;gap:.5rem;">
+          <button id="ys-ok" style="flex:1;padding:10px;background:#e85d14;color:#fff;border:none;border-radius:4px;font-size:14px;cursor:pointer;font-weight:600;">Invia contratto</button>
+          <button id="ys-no" style="padding:10px 16px;border:1px solid #ccc;background:#fff;border-radius:4px;font-size:14px;cursor:pointer;">Annulla</button>
+        </div>
+      </div>`;
+    document.body.appendChild(ov);
+    document.getElementById('ys-ok').onclick = function() {
+      var em = document.getElementById('ys-em').value.trim();
+      var tl = document.getElementById('ys-tel').value.trim();
+      if (!em||!tl) { alert('Email e telefono obbligatori'); return; }
+      document.body.removeChild(ov);
+      resolve({email:em, tel:tl});
+    };
+    document.getElementById('ys-no').onclick = function() {
+      document.body.removeChild(ov);
+      resolve(null);
+    };
+  });
+}
+
+async function generaPDFBase64(prev) {
+  var d = prev.dati || {};
+  var lista = d.lista || [];
+  var elementi = lista.map(function(e) {
+    return {desc: e.nome||e.desc||'Elemento', importo: e.subtot?(+e.subtot).toFixed(2).replace('.',','):'0,00'};
+  });
+  var tot = +(prev.totale||0);
+  var acc = (tot*0.5).toFixed(2).replace('.',',');
+  var totStr = tot.toFixed(2).replace('.',',');
+
+  var html = generaHTMLContratto({
+    nome: d.cliente||prev.cliente||'', cognome: '',
+    email: d.email||'', telefono: d.telefono||'',
+    indirizzo: '', citta: d.cantiere||'', cap: '', cod_fisc: '',
+    preventivo_n: prev.numero||'', data: d.data||new Date().toLocaleDateString('it-IT'),
+    importo_totale: totStr, acconto: acc, saldo: acc,
+    elementi: elementi, note: d.note||''
+  });
+
+  return new Promise(function(resolve, reject) {
+    var load = typeof html2pdf !== 'undefined'
+      ? Promise.resolve()
+      : new Promise(function(res,rej){
+          var s=document.createElement('script');
+          s.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+          s.onload=res; s.onerror=rej;
+          document.head.appendChild(s);
+        });
+    load.then(function() {
+      var c=document.createElement('div');
+      c.style.cssText='position:absolute;left:-9999px;top:0;width:210mm;';
+      c.innerHTML=html;
+      document.body.appendChild(c);
+      html2pdf().set({margin:[10,10,10,10],html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4'}})
+        .from(c).outputPdf('arraybuffer').then(function(buf){
+          document.body.removeChild(c);
+          var b=new Uint8Array(buf), s='';
+          b.forEach(function(x){s+=String.fromCharCode(x);});
+          resolve(btoa(s));
+        }).catch(function(e){document.body.removeChild(c);reject(e);});
+    }).catch(reject);
+  });
+}
+
+</script>
+</body>
+</html>
