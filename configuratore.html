@@ -1459,7 +1459,7 @@ return parti.join('_')+'.'+ext;
 }
 function downloadFile(text, filename){
 try{
-const mime=filename.endsWith('._h')?'\x74\x65\x78\x74\x2f\x68\x74\x6d\x6c':'\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e';const blob=new Blob([text],{type:mime});
+const mime=filename.endsWith('.html')?'\x74\x65\x78\x74\x2f\x68\x74\x6d\x6c':'\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e';const blob=new Blob([text],{type:mime});
 const url=URL.createObjectURL(blob);
 const a=document.createElement('a');
 a.href=url; a.download=filename;
@@ -2150,7 +2150,7 @@ ${contenuto}
 <button class="btn-stampa" onclick="window.print()" style="margin-top:1.5rem;">🖨 Stampa / Salva PDF</button>
 </body>
 </html>`;
-downloadFile(_h, nomePrev('stampa_'+(tabId==='prev'?'prev':'tec')+'._h'));
+downloadFile(_h, nomePrev('stampa_'+(tabId==='prev'?'prev':'tec')+'.html'));
 }
 const LS_CANTIERE='\x76\x65\x70\x61\x5f\x63\x61\x6e\x74\x69\x65\x72\x65\x5f\x76\x31';
 function salvaCantiere(){
@@ -2848,7 +2848,7 @@ if(lImp && lato.imp) lImp.value = lato.imp;
 if(lPom && lato.pom) lPom.value = lato.pom;
 if(lPomH) lPomH.value = lato.pomH || 1000;
 const lNante = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65');
-if(lNante && lato.nAnte) { lNante.value = lato.nAnte; aggiornaMultiNante(lNante); }
+if(lNante && lato.nAnte) { lNante.value = lato.nAnte; }
 if(lSer) { lSer.checked = !!lato.ser; toggleMlSer(lSer); }
 if(lSerH) lSerH.value = lato.serH || 1000;
 aggiornaMultiApertura(lL);
@@ -3447,15 +3447,23 @@ ${apribile?'Impacchettamento':'Fisso (L ≤ 1200mm)'}
 </select>
 </div>
 <div class="f"><label>N. ante</label>
-<input type="number" class="ml-nante"
-value="${apribile ? Math.ceil(prev.L/800) : 1}"
-min="1" max="${apribile ? Math.floor(prev.L/400) : 1}"
-${apribile?'':'disabled'}
-style="padding:6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;width:100%;background:${apribile?'':'var(--surf3)'};font-family:var(--mono);"
-oninput="aggiornaMultiNante(this)">
-<span class="ml-nante-info" style="font-size:10px;color:var(--muted);font-family:monospace;">
-${apribile ? 'L anta: '+Math.round(prev.L/Math.ceil(prev.L/800))+'mm' : 'fisso'}
-</span>
+<select class="ml-nante" ${apribile?'':'disabled'}
+style="width:100%;padding:6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:${apribile?'':'var(--surf3)'};font-family:var(--mono);"
+onchange="aggiornaMultiPreview()">
+${(function(){
+if(!apribile) return '<option value="1">Fisso</option>';
+const L=prev.L, L_MIN=400, lmax=900;
+const nMin=Math.ceil(L/lmax), nMax=Math.floor(L/L_MIN);
+const nDef=Math.max(nMin, Math.ceil(L/800));
+const curN=prev.nAnte||nDef;
+let opts='';
+for(let n=nMin;n<=Math.max(nMin,nMax);n++){
+const sel=(n===curN)||(!prev.nAnte&&n===nDef)?'selected':'';
+opts+=\`<option value="\${n}" \${sel}>\${n} ante — L = \${Math.round(L/n)} mm</option>\`;
+}
+return opts;
+})()}
+</select>
 </div>
 </div>
 <div class="ml-opts" style="${apribile?'':'display:none'};border-top:1px solid var(--bdr-lt);padding-top:.4rem;">
@@ -3482,20 +3490,6 @@ container.appendChild(div);
 }
 aggiornaMultiPreview();
 }
-function aggiornaMultiNante(input){
-const div = input.closest('\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d');
-if(!div) return;
-const L = +div.querySelector('.ml-L').value || 0;
-const maxAnte = Math.floor(L/400);
-let n = +input.value||1;
-if(n < 1) n = 1;
-if(n > maxAnte) { n = maxAnte; input.value = n; }
-const lAnte = Math.round(L/n);
-if(lAnte < 400){ n = Math.floor(L/400); input.value = n||1; }
-const info = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65\x2d\x69\x6e\x66\x6f');
-if(info) info.textContent = 'L anta: '+Math.round(L/(input.value||1))+'mm';
-aggiornaMultiPreview();
-}
 function toggleMlSer(cb){
 const w = cb.closest('\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d').querySelector('\x2e\x6d\x6c\x2d\x73\x65\x72\x48\x2d\x77\x72\x61\x70');
 if(w) w.style.display = cb.checked ? '' : 'none';
@@ -3514,21 +3508,26 @@ if(apribile){
 iw.style.opacity='1'; is.disabled=false;
 lbl.textContent='\x49\x6d\x70\x61\x63\x63\x68\x65\x74\x74\x61\x6d\x65\x6e\x74\x6f'; lbl.style.color='';
 if(opt) opt.style.display='';
-if(na){
-const maxAnte = Math.floor(L/400);
-const curAnte = Math.min(Math.max(+na.value||Math.ceil(L/800), 1), maxAnte||1);
-na.min=1; na.max=maxAnte||1; na.value=curAnte; na.disabled=false;
-na.style.background='';
-const info=na.parentElement.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65\x2d\x69\x6e\x66\x6f');
-if(info) info.textContent='L anta: '+Math.round(L/curAnte)+'mm';
+if(na && na.tagName==='SELECT'){
+const L_MIN=400, lmax=900;
+const nMin=Math.ceil(L/lmax), nMax=Math.floor(L/L_MIN);
+const curN=+na.value||Math.ceil(L/800);
+na.innerHTML='';
+for(let n=nMin;n<=Math.max(nMin,nMax);n++){
+const o=document.createElement('option');
+o.value=n; o.textContent=n+'\x20\x61\x6e\x74\x65\x20\u2014\x20\x4c\x20\x3d\x20'+Math.round(L/n)+' mm';
+if(n===curN) o.selected=true;
+na.appendChild(o);
+}
+na.disabled=false; na.style.background='';
 }
 } else {
 iw.style.opacity='.4'; is.disabled=true;
 lbl.textContent='\x46\x69\x73\x73\x6f\x20\x28\x4c\x20\u2264\x20\x31\x32\x30\x30\x6d\x6d\x29'; lbl.style.color='\x76\x61\x72\x28\x2d\x2d\x77\x61\x72\x6e\x29';
 if(opt) opt.style.display='none';
-if(na){ na.value=1; na.disabled=true; na.style.background='\x76\x61\x72\x28\x2d\x2d\x73\x75\x72\x66\x33\x29';
-const info=na.parentElement.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65\x2d\x69\x6e\x66\x6f');
-if(info) info.textContent='fisso';
+if(na && na.tagName==='SELECT'){
+na.innerHTML='\x3c\x6f\x70\x74\x69\x6f\x6e\x20\x76\x61\x6c\x75\x65\x3d\x22\x31\x22\x3e\x46\x69\x73\x73\x6f\x3c\x2f\x6f\x70\x74\x69\x6f\x6e\x3e';
+na.disabled=true; na.style.background='\x76\x61\x72\x28\x2d\x2d\x73\x75\x72\x66\x33\x29';
 }
 }
 }
@@ -3541,7 +3540,7 @@ const L = +div.querySelector('.ml-L').value || 3000;
 const apribile = latoApribile(multiConfig, div.dataset.lato, L);
 const imp = apribile ? div.querySelector('.ml-imp').value : 'fisso';
 const naEl = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65');
-const nAnte = apribile ? (naEl ? Math.max(1,+naEl.value||Math.ceil(L/800)) : Math.ceil(L/800)) : 0;
+const nAnte = apribile ? Math.max(1,+(naEl&&naEl.value)||Math.ceil(L/800)) : 0;
 lati.push({nome:div.dataset.lato, L, H, imp, nAnte, La:nAnte?Math.round(L/nAnte):0, apribile});
 });
 const W=300, pad=28, sp=12;
@@ -3556,17 +3555,17 @@ const dA=Math.round(A.L*scale), dB=Math.round(B.L*scale);
 const [bgA,cfA]=lc(A), [bgB,cfB]=lc(B);
 const ox=pad, oy=pad+dB+4;
 if(multiOrientL==='dx'){
-svg+=`<rect x="${ox}" y="${oy}" width="${dA}" height="${sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dA/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace">A ${A.L}mm</text>`;
-svg+=`<rect x="${ox+dA-sp}" y="${oy-dB}" width="${sp}" height="${dB+sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dA-sp/2}" y="${oy-dB/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace" transform="rotate(-90 ${ox+dA-sp/2} ${oy-dB/2})">B ${B.L}mm</text>`;
-svg+=`<circle cx="${ox+dA-sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
-} else {
-svg+=`<rect x="${ox}" y="${oy}" width="${dA}" height="${sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dA/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace">A ${A.L}mm</text>`;
+svg+=`<rect x="${ox+sp}" y="${oy}" width="${dA}" height="${sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+sp+dA/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace">A ${A.L}mm</text>`;
 svg+=`<rect x="${ox}" y="${oy-dB}" width="${sp}" height="${dB+sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
 svg+=`<text x="${ox+sp/2}" y="${oy-dB/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace" transform="rotate(-90 ${ox+sp/2} ${oy-dB/2})">B ${B.L}mm</text>`;
 svg+=`<circle cx="${ox+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
+} else {
+svg+=`<rect x="${ox}" y="${oy}" width="${dA}" height="${sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+dA/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace">A ${A.L}mm</text>`;
+svg+=`<rect x="${ox+dA}" y="${oy-dB}" width="${sp}" height="${dB+sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+dA+sp/2}" y="${oy-dB/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace" transform="rotate(-90 ${ox+dA+sp/2} ${oy-dB/2})">B ${B.L}mm</text>`;
+svg+=`<circle cx="${ox+dA+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
 }
 svgH=oy+sp+18;
 } else if(multiConfig==='C' && lati.length>=3){
@@ -3574,19 +3573,19 @@ const A=lati[0], B=lati[1], C3=lati[2];
 const dA=Math.round(A.L*scale), dB=Math.round(B.L*scale), dC=Math.round(C3.L*scale);
 const [bgA,cfA]=lc(A), [bgB,cfB]=lc(B), [bgC,cfC]=lc(C3);
 const ox=pad, oy=pad+Math.max(dA,dC)+4;
-svg+=`<rect x="${ox}" y="${oy}" width="${dB+sp}" height="${sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dB/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace">B ${B.L}mm${B.apribile?'':' (fisso)'}</text>`;
-svg+=`<rect x="${ox}" y="${oy-dA}" width="${sp}" height="${dA}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+sp/2}" y="${oy-dA/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace" transform="rotate(-90 ${ox+sp/2} ${oy-dA/2})">A ${A.L}mm</text>`;
-svg+=`<rect x="${ox+dB}" y="${oy-dC}" width="${sp}" height="${dC}" fill="${bgC}" stroke="${cfC}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dB+sp/2}" y="${oy-dC/2+4}" text-anchor="middle" font-size="9" fill="${cfC}" font-family="monospace" transform="rotate(90 ${ox+dB+sp/2} ${oy-dC/2})">C ${C3.L}mm</text>`;
-svg+=`<circle cx="${ox+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
-svg+=`<circle cx="${ox+dB+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
+svg+=`<rect x="${ox+dC}" y="${oy}" width="${dB+sp}" height="${sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+dC+dB/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace">B ${B.L}mm${B.apribile?'':' (fisso)'}</text>`;
+svg+=`<rect x="${ox+dC+dB}" y="${oy-dA}" width="${sp}" height="${dA}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+dC+dB+sp/2}" y="${oy-dA/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace" transform="rotate(-90 ${ox+dC+dB+sp/2} ${oy-dA/2})">A ${A.L}mm</text>`;
+svg+=`<rect x="${ox}" y="${oy-dC}" width="${sp}" height="${dC}" fill="${bgC}" stroke="${cfC}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+sp/2}" y="${oy-dC/2+4}" text-anchor="middle" font-size="9" fill="${cfC}" font-family="monospace" transform="rotate(-90 ${ox+sp/2} ${oy-dC/2})">C ${C3.L}mm</text>`;
+svg+=`<circle cx="${ox+dC}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
+svg+=`<circle cx="${ox+dC+dB+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
 svgH=oy+sp+18;
 }
 document.getElementById('\x6d\x6c\x2d\x70\x72\x65\x76\x69\x65\x77').innerHTML=
 `<div style="font-size:9px;font-family:monospace;color:var(--muted);text-align:center;margin-bottom:2px;">👁 Vista dall'esterno</div>`+
-`<svg width="${W}" height="${svgH}" viewBox="0 0 ${W} ${svgH}" style="display:inline-block;max-width:100%;transform:scaleX(-1);">${svg}</svg>`;
+`<svg width="${W}" height="${svgH}" viewBox="0 0 ${W} ${svgH}" style="display:inline-block;max-width:100%;">${svg}</svg>`;
 const nAngoli=multiConfig==='L'?1:2;
 const mqTot=lati.reduce((s,l)=>s+(l.L/1000*H/1000),0);
 const fissi=lati.filter(l=>!l.apribile).map(l=>l.nome.replace(/ \(.*\)/,''));
@@ -3608,7 +3607,7 @@ const L = +div.querySelector('.ml-L').value || 3000;
 const apribile = latoApribile(multiConfig, div.dataset.lato, L);
 const imp = apribile ? div.querySelector('.ml-imp').value : 'fisso';
 const naEl2 = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65');
-const nAnte = apribile ? (naEl2 ? Math.max(1,+naEl2.value||Math.ceil(L/800)) : Math.ceil(L/800)) : 0;
+const nAnte = apribile ? Math.max(1,+(naEl2&&naEl2.value)||Math.ceil(L/800)) : 0;
 const pom = apribile && div.querySelector('.ml-pom') ? div.querySelector('.ml-pom').value : 'singolo';
 const pomH = div.querySelector('.ml-pomH') ? +div.querySelector('.ml-pomH').value : 1000;
 const ser = apribile && div.querySelector('.ml-ser') ? div.querySelector('.ml-ser').checked : false;
