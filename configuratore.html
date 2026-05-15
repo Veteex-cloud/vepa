@@ -2121,15 +2121,15 @@ clone.querySelectorAll('\x2e\x6e\x6f\x2d\x70\x72\x69\x6e\x74\x2c\x2e\x70\x72\x69
 clone.querySelectorAll('.vi-body').forEach(el=>el.style.display='block');
 _ct=clone.innerHTML;
 }
-const _h=`<!DOCTYPE _h>
-<_h lang="it">
+const _h=`<!DOCTYPE html>
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${titolo}</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
-${_st}
+${styles}
 body{padding:1cm;background:#fff;color:#000;font-family:'DM Sans',sans-serif;max-width:900px;margin:0 auto;}
 .no-print,.tab-badge,.add-btn,.vi-btn,.print-btn,.modal-overlay,.confirm-overlay{display:none!important;}
 .card{break-inside:avoid;margin-bottom:.6rem;page-break-inside:avoid;}
@@ -2146,10 +2146,10 @@ body{padding:0;}
 <body>
 <div id="debug-ver" style="display:none">v6-initloc-fix</div>
 <button class="btn-stampa" onclick="window.print()">🖨 Stampa / Salva PDF</button>
-${_ct}
+${contenuto}
 <button class="btn-stampa" onclick="window.print()" style="margin-top:1.5rem;">🖨 Stampa / Salva PDF</button>
 </body>
-</_h>`;
+</html>`;
 downloadFile(_h, nomePrev('stampa_'+(tabId==='prev'?'prev':'tec')+'._h'));
 }
 const LS_CANTIERE='\x76\x65\x70\x61\x5f\x63\x61\x6e\x74\x69\x65\x72\x65\x5f\x76\x31';
