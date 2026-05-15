@@ -2143,13 +2143,20 @@ body{padding:0;}
 </head>
 <body>
 <div id="debug-ver" style="display:none">v6-initloc-fix</div>
-<script>document.title="${titolo}";</scr${''}ipt>
 <button class="btn-stampa" onclick="window.print()">🖨 Stampa / Salva PDF</button>
 ${contenuto}
 <button class="btn-stampa" onclick="window.print()" style="margin-top:1.5rem;">🖨 Stampa / Salva PDF</button>
 </body>
 </html>`;
+const _w = window.open('', '_blank');
+if(_w){
+_w.document.open();
+_w.document.write(html);
+_w.document.close();
+_w.document.title = titolo; 
+} else {
 downloadFile(html, _fnPrev);
+}
 }
 const LS_CANTIERE='\x76\x65\x70\x61\x5f\x63\x61\x6e\x74\x69\x65\x72\x65\x5f\x76\x31';
 function salvaCantiere(){
