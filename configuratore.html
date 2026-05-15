@@ -1459,7 +1459,7 @@ return parti.join('_')+'.'+ext;
 }
 function downloadFile(text, filename){
 try{
-const blob=new Blob([text],{type:'\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e'});
+const mime=filename.endsWith('._h')?'\x74\x65\x78\x74\x2f\x68\x74\x6d\x6c':'\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e';const blob=new Blob([text],{type:mime});
 const url=URL.createObjectURL(blob);
 const a=document.createElement('a');
 a.href=url; a.download=filename;
@@ -2847,6 +2847,8 @@ if(lL) lL.value = lato.L || 3000;
 if(lImp && lato.imp) lImp.value = lato.imp;
 if(lPom && lato.pom) lPom.value = lato.pom;
 if(lPomH) lPomH.value = lato.pomH || 1000;
+const lNante = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65');
+if(lNante && lato.nAnte) { lNante.value = lato.nAnte; aggiornaMultiNante(lNante); }
 if(lSer) { lSer.checked = !!lato.ser; toggleMlSer(lSer); }
 if(lSerH) lSerH.value = lato.serH || 1000;
 aggiornaMultiApertura(lL);
@@ -3444,9 +3446,16 @@ ${apribile?'Impacchettamento':'Fisso (L ≤ 1200mm)'}
 <option value="doppia" ${prev.imp==='doppia'?'selected':''}>Doppia ←→</option>
 </select>
 </div>
-<div class="f"><label>N. ante (auto)</label>
-<input type="text" class="ml-nante" readonly style="background:var(--surf3);color:var(--muted);cursor:default;"
-value="${apribile ? Math.ceil(prev.L/800)+' ante (L='+Math.round(prev.L/Math.ceil(prev.L/800))+'mm)' : 'Fisso'}">
+<div class="f"><label>N. ante</label>
+<input type="number" class="ml-nante"
+value="${apribile ? Math.ceil(prev.L/800) : 1}"
+min="1" max="${apribile ? Math.floor(prev.L/400) : 1}"
+${apribile?'':'disabled'}
+style="padding:6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;width:100%;background:${apribile?'':'var(--surf3)'};font-family:var(--mono);"
+oninput="aggiornaMultiNante(this)">
+<span class="ml-nante-info" style="font-size:10px;color:var(--muted);font-family:monospace;">
+${apribile ? 'L anta: '+Math.round(prev.L/Math.ceil(prev.L/800))+'mm' : 'fisso'}
+</span>
 </div>
 </div>
 <div class="ml-opts" style="${apribile?'':'display:none'};border-top:1px solid var(--bdr-lt);padding-top:.4rem;">
@@ -3473,6 +3482,20 @@ container.appendChild(div);
 }
 aggiornaMultiPreview();
 }
+function aggiornaMultiNante(input){
+const div = input.closest('\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d');
+if(!div) return;
+const L = +div.querySelector('.ml-L').value || 0;
+const maxAnte = Math.floor(L/400);
+let n = +input.value||1;
+if(n < 1) n = 1;
+if(n > maxAnte) { n = maxAnte; input.value = n; }
+const lAnte = Math.round(L/n);
+if(lAnte < 400){ n = Math.floor(L/400); input.value = n||1; }
+const info = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65\x2d\x69\x6e\x66\x6f');
+if(info) info.textContent = 'L anta: '+Math.round(L/(input.value||1))+'mm';
+aggiornaMultiPreview();
+}
 function toggleMlSer(cb){
 const w = cb.closest('\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d').querySelector('\x2e\x6d\x6c\x2d\x73\x65\x72\x48\x2d\x77\x72\x61\x70');
 if(w) w.style.display = cb.checked ? '' : 'none';
@@ -3491,13 +3514,22 @@ if(apribile){
 iw.style.opacity='1'; is.disabled=false;
 lbl.textContent='\x49\x6d\x70\x61\x63\x63\x68\x65\x74\x74\x61\x6d\x65\x6e\x74\x6f'; lbl.style.color='';
 if(opt) opt.style.display='';
-const nAnte = Math.ceil(L/800);
-if(na) na.value = nAnte+'\x20\x61\x6e\x74\x65\x20\x28\x4c\x3d'+Math.round(L/nAnte)+'mm)';
+if(na){
+const maxAnte = Math.floor(L/400);
+const curAnte = Math.min(Math.max(+na.value||Math.ceil(L/800), 1), maxAnte||1);
+na.min=1; na.max=maxAnte||1; na.value=curAnte; na.disabled=false;
+na.style.background='';
+const info=na.parentElement.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65\x2d\x69\x6e\x66\x6f');
+if(info) info.textContent='L anta: '+Math.round(L/curAnte)+'mm';
+}
 } else {
 iw.style.opacity='.4'; is.disabled=true;
 lbl.textContent='\x46\x69\x73\x73\x6f\x20\x28\x4c\x20\u2264\x20\x31\x32\x30\x30\x6d\x6d\x29'; lbl.style.color='\x76\x61\x72\x28\x2d\x2d\x77\x61\x72\x6e\x29';
 if(opt) opt.style.display='none';
-if(na) na.value='Fisso';
+if(na){ na.value=1; na.disabled=true; na.style.background='\x76\x61\x72\x28\x2d\x2d\x73\x75\x72\x66\x33\x29';
+const info=na.parentElement.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65\x2d\x69\x6e\x66\x6f');
+if(info) info.textContent='fisso';
+}
 }
 }
 function aggiornaMultiPreview(){
@@ -3508,7 +3540,8 @@ container.querySelectorAll('\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d').forEa
 const L = +div.querySelector('.ml-L').value || 3000;
 const apribile = latoApribile(multiConfig, div.dataset.lato, L);
 const imp = apribile ? div.querySelector('.ml-imp').value : 'fisso';
-const nAnte = apribile ? Math.ceil(L/800) : 0;
+const naEl = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65');
+const nAnte = apribile ? (naEl ? Math.max(1,+naEl.value||Math.ceil(L/800)) : Math.ceil(L/800)) : 0;
 lati.push({nome:div.dataset.lato, L, H, imp, nAnte, La:nAnte?Math.round(L/nAnte):0, apribile});
 });
 const W=300, pad=28, sp=12;
@@ -3551,7 +3584,9 @@ svg+=`<circle cx="${ox+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`
 svg+=`<circle cx="${ox+dB+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
 svgH=oy+sp+18;
 }
-document.getElementById('\x6d\x6c\x2d\x70\x72\x65\x76\x69\x65\x77').innerHTML=`<svg width="${W}" height="${svgH}" viewBox="0 0 ${W} ${svgH}" style="display:inline-block;max-width:100%;">${svg}</svg>`;
+document.getElementById('\x6d\x6c\x2d\x70\x72\x65\x76\x69\x65\x77').innerHTML=
+`<div style="font-size:9px;font-family:monospace;color:var(--muted);text-align:center;margin-bottom:2px;">👁 Vista dall'esterno</div>`+
+`<svg width="${W}" height="${svgH}" viewBox="0 0 ${W} ${svgH}" style="display:inline-block;max-width:100%;transform:scaleX(-1);">${svg}</svg>`;
 const nAngoli=multiConfig==='L'?1:2;
 const mqTot=lati.reduce((s,l)=>s+(l.L/1000*H/1000),0);
 const fissi=lati.filter(l=>!l.apribile).map(l=>l.nome.replace(/ \(.*\)/,''));
@@ -3572,7 +3607,8 @@ container.querySelectorAll('\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d').forEa
 const L = +div.querySelector('.ml-L').value || 3000;
 const apribile = latoApribile(multiConfig, div.dataset.lato, L);
 const imp = apribile ? div.querySelector('.ml-imp').value : 'fisso';
-const nAnte = apribile ? Math.ceil(L/800) : 0;
+const naEl2 = div.querySelector('\x2e\x6d\x6c\x2d\x6e\x61\x6e\x74\x65');
+const nAnte = apribile ? (naEl2 ? Math.max(1,+naEl2.value||Math.ceil(L/800)) : Math.ceil(L/800)) : 0;
 const pom = apribile && div.querySelector('.ml-pom') ? div.querySelector('.ml-pom').value : 'singolo';
 const pomH = div.querySelector('.ml-pomH') ? +div.querySelector('.ml-pomH').value : 1000;
 const ser = apribile && div.querySelector('.ml-ser') ? div.querySelector('.ml-ser').checked : false;
