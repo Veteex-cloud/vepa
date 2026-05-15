@@ -3447,7 +3447,7 @@ div.innerHTML = `
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;align-items:end;margin-bottom:.4rem;">
 <div class="f"><label>Larghezza L (mm)</label>
 <input type="number" class="ml-L" value="${prev.L}" min="600" max="10000" step="50"
-oninput="aggiornaMultiApertura(this);aggiornaMultiPreview()">
+oninput="aggiornaMultiApertura(this);aggiornaMultiPreview();aggiornaHLWarnings()">
 </div>
 <div class="f ml-imp-wrap" style="${apribile?'':'opacity:.4'}">
 <label class="ml-imp-label" style="${apribile?'':'color:var(--warn)'}">
@@ -3488,6 +3488,10 @@ ${buildNanteOptions(apribile, prev.L, prev.nAnte)}
 </div>
 </div>`;
 container.appendChild(div);
+const hlDiv=document.createElement('div');
+hlDiv.className='\x6d\x6c\x2d\x68\x6c\x2d\x77\x61\x72\x6e';
+hlDiv.style.cssText='\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x6d\x6f\x6e\x6f\x73\x70\x61\x63\x65\x3b\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x32\x70\x78\x3b\x64\x69\x73\x70\x6c\x61\x79\x3a\x6e\x6f\x6e\x65\x3b';
+container.lastElementChild.appendChild(hlDiv);
 }
 aggiornaMultiPreview();
 }
@@ -3532,6 +3536,21 @@ na.disabled=true; na.style.background='\x76\x61\x72\x28\x2d\x2d\x73\x75\x72\x66\
 }
 }
 }
+function aggiornaHLWarnings(){
+const H=+document.getElementById('ml-H').value||2400;
+document.querySelectorAll('\x23\x6d\x6c\x2d\x6c\x61\x74\x69\x20\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d').forEach(div=>{
+const L=+div.querySelector('.ml-L').value||0;
+const warn=div.querySelector('\x2e\x6d\x6c\x2d\x68\x6c\x2d\x77\x61\x72\x6e');
+if(!warn||!L) return;
+const hl=(H/L);
+if(hl>=3){
+warn.innerHTML='\x3c\x73\x70\x61\x6e\x20\x73\x74\x79\x6c\x65\x3d\x22\x63\x6f\x6c\x6f\x72\x3a\x23\x63\x30\x33\x39\x32\x62\x3b\x22\x3e\u26a0\x20\x48\x2f\x4c\x20\x3d\x20'+hl.toFixed(2)+'\x20\u2265\x20\x33\x20\u2014\x20\x6e\x6f\x6e\x20\x63\x6f\x70\x65\x72\x74\x6f\x20\x64\x61\x20\x67\x61\x72\x61\x6e\x7a\x69\x61\x3c\x2f\x73\x70\x61\x6e\x3e';
+warn.style.display='block';
+} else {
+warn.style.display='none';
+}
+});
+}
 function aggiornaMultiPreview(){
 const H = +document.getElementById('ml-H').value || 2400;
 const container = document.getElementById('ml-lati');
@@ -3551,38 +3570,38 @@ let svg='', svgH=150;
 const CF='#1a6b5a', CBG='#d8f0e8', CFiss='#888', CBGfiss='#eee';
 const lc = l => l.apribile ? [CBG,CF] : [CBGfiss,CFiss];
 if(multiConfig==='L' && lati.length>=2){
-const A=lati[0], B=lati[1];
+const A=lati[0], B=lati[1]; 
 const dA=Math.round(A.L*scale), dB=Math.round(B.L*scale);
 const [bgA,cfA]=lc(A), [bgB,cfB]=lc(B);
-const ox=pad, oy=pad+dB+4;
+const ox=pad, oy=pad;
 if(multiOrientL==='dx'){
+svg+=`<rect x="${ox}" y="${oy}" width="${dA+sp}" height="${sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+(dA+sp)/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace">A ${A.L}mm</text>`;
+svg+=`<rect x="${ox+dA}" y="${oy}" width="${sp}" height="${dB+sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+dA+sp/2}" y="${oy+dB/2+sp}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace" transform="rotate(90 ${ox+dA+sp/2} ${oy+dB/2+sp/2})">B ${B.L}mm</text>`;
+svg+=`<circle cx="${ox+dA+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
+} else {
 svg+=`<rect x="${ox+sp}" y="${oy}" width="${dA}" height="${sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
 svg+=`<text x="${ox+sp+dA/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace">A ${A.L}mm</text>`;
-svg+=`<rect x="${ox}" y="${oy-dB}" width="${sp}" height="${dB+sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+sp/2}" y="${oy-dB/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace" transform="rotate(-90 ${ox+sp/2} ${oy-dB/2})">B ${B.L}mm</text>`;
+svg+=`<rect x="${ox}" y="${oy}" width="${sp}" height="${dB+sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+sp/2}" y="${oy+dB/2+sp}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace" transform="rotate(-90 ${ox+sp/2} ${oy+dB/2+sp/2})">B ${B.L}mm</text>`;
 svg+=`<circle cx="${ox+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
-} else {
-svg+=`<rect x="${ox}" y="${oy}" width="${dA}" height="${sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dA/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace">A ${A.L}mm</text>`;
-svg+=`<rect x="${ox+dA}" y="${oy-dB}" width="${sp}" height="${dB+sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dA+sp/2}" y="${oy-dB/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace" transform="rotate(-90 ${ox+dA+sp/2} ${oy-dB/2})">B ${B.L}mm</text>`;
-svg+=`<circle cx="${ox+dA+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
 }
-svgH=oy+sp+18;
+svgH=Math.max(dA,dB)+sp+pad+18;
 } else if(multiConfig==='C' && lati.length>=3){
-const A=lati[0], B=lati[1], C3=lati[2];
+const A=lati[0], B=lati[1], C3=lati[2]; 
 const dA=Math.round(A.L*scale), dB=Math.round(B.L*scale), dC=Math.round(C3.L*scale);
 const [bgA,cfA]=lc(A), [bgB,cfB]=lc(B), [bgC,cfC]=lc(C3);
-const ox=pad, oy=pad+Math.max(dA,dC)+4;
-svg+=`<rect x="${ox+dC}" y="${oy}" width="${dB+sp}" height="${sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dC+dB/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace">B ${B.L}mm${B.apribile?'':' (fisso)'}</text>`;
-svg+=`<rect x="${ox+dC+dB}" y="${oy-dA}" width="${sp}" height="${dA}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+dC+dB+sp/2}" y="${oy-dA/2+4}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace" transform="rotate(-90 ${ox+dC+dB+sp/2} ${oy-dA/2})">A ${A.L}mm</text>`;
-svg+=`<rect x="${ox}" y="${oy-dC}" width="${sp}" height="${dC}" fill="${bgC}" stroke="${cfC}" stroke-width="1.5" rx="1"/>`;
-svg+=`<text x="${ox+sp/2}" y="${oy-dC/2+4}" text-anchor="middle" font-size="9" fill="${cfC}" font-family="monospace" transform="rotate(-90 ${ox+sp/2} ${oy-dC/2})">C ${C3.L}mm</text>`;
-svg+=`<circle cx="${ox+dC}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
-svg+=`<circle cx="${ox+dC+dB+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
-svgH=oy+sp+18;
+const ox=pad, oy=pad;
+svg+=`<rect x="${ox}" y="${oy}" width="${dB+sp}" height="${sp}" fill="${bgB}" stroke="${cfB}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+(dB+sp)/2}" y="${oy+sp/2+4}" text-anchor="middle" font-size="9" fill="${cfB}" font-family="monospace">B ${B.L}mm</text>`;
+svg+=`<rect x="${ox}" y="${oy}" width="${sp}" height="${dA+sp}" fill="${bgA}" stroke="${cfA}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+sp/2}" y="${oy+dA/2+sp}" text-anchor="middle" font-size="9" fill="${cfA}" font-family="monospace" transform="rotate(-90 ${ox+sp/2} ${oy+dA/2+sp/2})">A ${A.L}mm</text>`;
+svg+=`<rect x="${ox+dB}" y="${oy}" width="${sp}" height="${dC+sp}" fill="${bgC}" stroke="${cfC}" stroke-width="1.5" rx="1"/>`;
+svg+=`<text x="${ox+dB+sp/2}" y="${oy+dC/2+sp}" text-anchor="middle" font-size="9" fill="${cfC}" font-family="monospace" transform="rotate(90 ${ox+dB+sp/2} ${oy+dC/2+sp/2})">C ${C3.L}mm</text>`;
+svg+=`<circle cx="${ox+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
+svg+=`<circle cx="${ox+dB+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"/>`;
+svgH=Math.max(dA,dB,dC)+sp+pad+18;
 }
 document.getElementById('\x6d\x6c\x2d\x70\x72\x65\x76\x69\x65\x77').innerHTML=
 `<div style="font-size:9px;font-family:monospace;color:var(--muted);text-align:center;margin-bottom:2px;">👁 Vista dall'esterno</div>`+
@@ -3591,7 +3610,9 @@ const nAngoli=multiConfig==='L'?1:2;
 const mqTot=lati.reduce((s,l)=>s+(l.L/1000*H/1000),0);
 const fissi=lati.filter(l=>!l.apribile).map(l=>l.nome.replace(/ \(.*\)/,''));
 const noteF=fissi.length?'\x20\u00b7\x20\x3c\x73\x70\x61\x6e\x20\x73\x74\x79\x6c\x65\x3d\x22\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x77\x61\x72\x6e\x29\x22\x3e\x66\x69\x73\x73\x6f\x3a\x20'+fissi.join(', ')+'</span>':'';
-document.getElementById('ml-info').innerHTML=`Superficie: <b>${mqTot.toFixed(2)} m²</b> · H=${H}mm · ${nAngoli} angol${nAngoli===1?'o':'i'} vetro-vetro${noteF}`;
+const fuoriGar=lati.filter(l=>l.L>0 && H/l.L>=3).map(l=>l.nome.replace(/ \(.*\)/,''));
+const noteG=fuoriGar.length?'\x20\u00b7\x20\x3c\x73\x70\x61\x6e\x20\x73\x74\x79\x6c\x65\x3d\x22\x63\x6f\x6c\x6f\x72\x3a\x23\x63\x30\x33\x39\x32\x62\x3b\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x22\x3e\u26a0\x20\x66\x75\x6f\x72\x69\x20\x67\x61\x72\x61\x6e\x7a\x69\x61\x20\x48\x2f\x4c\u2265\x33\x3a\x20'+fuoriGar.join(', ')+'</span>':'';
+document.getElementById('ml-info').innerHTML=`Superficie: <b>${mqTot.toFixed(2)} m²</b> · H=${H}mm · ${nAngoli} angol${nAngoli===1?'o':'i'} vetro-vetro${noteF}${noteG}`;
 }
 function salvaMulti(){
 const nome = document.getElementById('ml-nome').value.trim();
@@ -4266,7 +4287,7 @@ alert('Errore: '+JSON.stringify(e));
     </div>
     <div class="f" style="margin-top:.5rem;max-width:220px;">
       <label>Altezza H (mm) — tutti i lati</label>
-      <input type="number" id="ml-H" value="2400" min="400" max="3100" step="10" oninput="aggiornaMultiPreview()">
+      <input type="number" id="ml-H" value="2400" min="400" max="3100" step="10" oninput="aggiornaMultiPreview();aggiornaHLWarnings()">
     </div>
     <div id="ml-lati" style="margin-top:.75rem;display:flex;flex-direction:column;gap:.75rem;"></div>
     <div id="ml-preview" class="timpano-svg-preview" style="margin-top:.75rem;text-align:center;padding:.5rem;min-height:80px;"></div>
