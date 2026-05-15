@@ -2033,8 +2033,8 @@ try{return Array.from(ss.cssRules).map(r=>r.cssText).join('\n');}catch(e){return
 const az=document.getElementById('prev-az')?document.getElementById('prev-az').value.trim():'';
 const cli=document.getElementById('prev-cli')?document.getElementById('prev-cli').value.trim():'';
 const num=(document.getElementById('prev-num')?document.getElementById('prev-num').value.trim():'')||'001';
-const _fnPrev=nomePrev('stampa_'+(tabId==='prev'?'prev':'tec'));
-const titolo=_fnPrev.replace(/\.html$/,'').replace(/_/g,' ');
+const _fnPrev=nomePrev('stampa_'+(tabId==='prev'?'prev':'tec')+'.html');
+const titolo=_fnPrev.replace('.html','').replace(/[._]+/g,' ').trim();
 var contenuto='';
 if(tabId==='prev'){
 if(modalita==='\x72\x69\x65\x70\x69\x6c\x6f\x67\x6f'){
