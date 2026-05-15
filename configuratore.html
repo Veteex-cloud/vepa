@@ -3397,8 +3397,7 @@ document.getElementById('ml-ol-sx').classList.toggle('on', o==='sx');
 aggiornaMultiPreview();
 }
 function latoApribile(cfg, nome, L){
-if(cfg==='L') return nome.startsWith('Lato A') || L > 1200;
-return !nome.startsWith('Lato B') || L > 1200;
+return true; 
 }
 function buildNanteOptions(apribile, L, curN){
 if(!apribile) return '\x3c\x6f\x70\x74\x69\x6f\x6e\x20\x76\x61\x6c\x75\x65\x3d\x22\x31\x22\x3e\x46\x69\x73\x73\x6f\x3c\x2f\x6f\x70\x74\x69\x6f\x6e\x3e';
@@ -3604,7 +3603,7 @@ svg+=`<circle cx="${ox+dB+sp/2}" cy="${oy+sp/2}" r="5" fill="${CF}" opacity=".8"
 svgH=Math.max(dA,dB,dC)+sp+pad+18;
 }
 document.getElementById('\x6d\x6c\x2d\x70\x72\x65\x76\x69\x65\x77').innerHTML=
-`<div style="font-size:9px;font-family:monospace;color:var(--muted);text-align:center;margin-bottom:2px;">👁 Vista dall'esterno</div>`+
+`<div style="font-size:9px;font-family:monospace;color:var(--muted);text-align:center;margin-bottom:2px;">👁 Vista dall'interno</div>`+
 `<svg width="${W}" height="${svgH}" viewBox="0 0 ${W} ${svgH}" style="display:inline-block;max-width:100%;">${svg}</svg>`;
 const nAngoli=multiConfig==='L'?1:2;
 const mqTot=lati.reduce((s,l)=>s+(l.L/1000*H/1000),0);
