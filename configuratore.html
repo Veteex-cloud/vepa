@@ -3400,6 +3400,19 @@ function latoApribile(cfg, nome, L){
 if(cfg==='L') return nome.startsWith('Lato A') || L > 1200;
 return !nome.startsWith('Lato B') || L > 1200;
 }
+function buildNanteOptions(apribile, L, curN){
+if(!apribile) return '\x3c\x6f\x70\x74\x69\x6f\x6e\x20\x76\x61\x6c\x75\x65\x3d\x22\x31\x22\x3e\x46\x69\x73\x73\x6f\x3c\x2f\x6f\x70\x74\x69\x6f\x6e\x3e';
+var L_MIN=400, lmax=900;
+var nMin=Math.ceil(L/lmax), nMax=Math.floor(L/L_MIN);
+var nDef=Math.max(nMin, Math.ceil(L/800));
+var cur=curN||nDef;
+var opts='';
+for(var n=nMin; n<=Math.max(nMin,nMax); n++){
+var sel=(n===cur)?'selected':'';
+opts+='\x3c\x6f\x70\x74\x69\x6f\x6e\x20\x76\x61\x6c\x75\x65\x3d\x22'+n+'" '+sel+'>'+n+'\x20\x61\x6e\x74\x65\x20\u2014\x20\x4c\x20\x3d\x20'+Math.round(L/n)+'\x20\x6d\x6d\x3c\x2f\x6f\x70\x74\x69\x6f\x6e\x3e';
+}
+return opts;
+}
 function buildMultiLati(){
 const n = multiConfig==='L' ? 2 : 3;
 const nomi = {L:['\x4c\x61\x74\x6f\x20\x41\x20\x28\x6c\x75\x6e\x67\x6f\x29','\x4c\x61\x74\x6f\x20\x42\x20\x28\x63\x6f\x72\x74\x6f\x29'], C:['Lato A','\x4c\x61\x74\x6f\x20\x42\x20\x28\x63\x65\x6e\x74\x72\x61\x6c\x65\x29','Lato C']};
@@ -3450,19 +3463,7 @@ ${apribile?'Impacchettamento':'Fisso (L ≤ 1200mm)'}
 <select class="ml-nante" ${apribile?'':'disabled'}
 style="width:100%;padding:6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:${apribile?'':'var(--surf3)'};font-family:var(--mono);"
 onchange="aggiornaMultiPreview()">
-${(function(){
-if(!apribile) return '<option value="1">Fisso</option>';
-const L=prev.L, L_MIN=400, lmax=900;
-const nMin=Math.ceil(L/lmax), nMax=Math.floor(L/L_MIN);
-const nDef=Math.max(nMin, Math.ceil(L/800));
-const curN=prev.nAnte||nDef;
-let opts='';
-for(let n=nMin;n<=Math.max(nMin,nMax);n++){
-const sel=(n===curN)||(!prev.nAnte&&n===nDef)?'selected':'';
-opts+=\`<option value="\${n}" \${sel}>\${n} ante — L = \${Math.round(L/n)} mm</option>\`;
-}
-return opts;
-})()}
+${buildNanteOptions(apribile, prev.L, prev.nAnte)}
 </select>
 </div>
 </div>
