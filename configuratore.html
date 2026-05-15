@@ -2148,74 +2148,6 @@ body{padding:0;}
 <button class="btn-stampa" onclick="window.print()">🖨 Stampa / Salva PDF</button>
 ${_ct}
 <button class="btn-stampa" onclick="window.print()" style="margin-top:1.5rem;">🖨 Stampa / Salva PDF</button>
-<!-- ════════ MODAL PRODOTTO LIBERO ════════ -->
-<div class="modal-overlay" id="modal-prodotto">
-<div class="modal-box">
-<div class="modal-title">Prodotto / Servizio libero</div>
-<div class="f"><label>Descrizione *</label>
-<input type="text" id="pl-desc" placeholder="Es. Pergola bioclimatica 4×3m, Smontaggio infissi..." style="width:100%;padding:8px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;">
-</div>
-<div class="ir" style="margin-top:.75rem;">
-<div class="f"><label>Quantità</label>
-<input type="number" id="pl-qty" value="1" min="0.01" step="0.01" style="padding:8px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
-</div>
-<div class="f"><label>Unità</label>
-<select id="pl-um" style="padding:8px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
-<option value="cad.">cad.</option>
-<option value="m²">m²</option>
-<option value="m">m lin.</option>
-<option value="corpo">a corpo</option>
-<option value="h">ore</option>
-<option value="kg">kg</option>
-</select>
-</div>
-<div class="f"><label>Prezzo unitario (€)</label>
-<input type="number" id="pl-pu" value="0" min="0" step="0.5" oninput="aggiornaTotalePL()" style="padding:8px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;font-family:var(--mono);">
-</div>
-</div>
-<div style="margin-top:.5rem;padding:8px 12px;background:var(--surf2);border-radius:var(--r);font-family:var(--mono);font-size:13px;">
-Totale: <b id="pl-tot">€ 0,00</b>
-</div>
-<div class="modal-actions" style="margin-top:1rem;">
-<button class="add-btn" style="margin-top:0;" onclick="salvaProdottoLibero()">Aggiungi al preventivo</button>
-<button class="btn-sec" onclick="chiudiModal(null,'prodotto')">Annulla</button>
-</div>
-</div>
-</div>
-<!-- ════════ MODAL LOGO E DATI AZIENDALI ════════ -->
-<div class="modal-overlay" id="modal-azienda" onclick="chiudiModal(event,'azienda')">
-<div class="modal-box" style="max-width:580px;" onclick="event.stopPropagation()">
-<div class="modal-title">🏢 Logo e dati aziendali</div>
-<div style="margin-bottom:1rem;">
-<div style="font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;">Logo aziendale</div>
-<div id="az-logo-preview" style="margin-bottom:.5rem;min-height:24px;"></div>
-<label style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;cursor:pointer;">
-📎 Carica logo (max 500 KB)
-<input type="file" accept="image/*" style="display:none;" onchange="caricaLogoAz(this)">
-</label>
-<button onclick="rimuoviLogoAz()" style="margin-left:.4rem;padding:5px 10px;background:none;border:1px solid var(--bdr);border-radius:var(--r);font-size:11px;color:var(--muted);cursor:pointer;">✕ Rimuovi</button>
-<div style="font-size:10px;color:var(--hint);margin-top:.25rem;">PNG o SVG — appare nell'intestazione del PDF preventivo</div>
-</div>
-<div style="font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">Dati aziendali</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem;">
-<div class="f"><label>Ragione sociale</label><input type="text" id="az-ragione" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="B4C S.r.l."></div>
-<div class="f"><label>P. IVA</label><input type="text" id="az-piva" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="03043140908"></div>
-<div class="f"><label>Indirizzo</label><input type="text" id="az-indirizzo" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="Via Taramelli 6, 07100 Sassari"></div>
-<div class="f"><label>Telefono</label><input type="text" id="az-tel" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="+39 079..."></div>
-<div class="f"><label>Email</label><input type="email" id="az-email" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="info@b4csrl.it"></div>
-<div class="f"><label>Sito web</label><input type="text" id="az-web" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="www.b4c-srl.it"></div>
-<div class="f"><label>IBAN</label><input type="text" id="az-iban" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="IT..."></div>
-<div class="f"><label>Codice fiscale</label><input type="text" id="az-cf" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="03043140908"></div>
-</div>
-<div class="f" style="margin-top:.4rem;"><label>Note aggiuntive</label>
-<textarea id="az-note" rows="2" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);resize:vertical;" placeholder="Es. Registro Imprese SS..."></textarea>
-</div>
-<div class="modal-actions">
-<button class="add-btn" style="margin-top:0;" onclick="salvaDatiAzienda()">💾 Salva e applica</button>
-<button class="vi-btn" onclick="chiudiModal(null,'azienda')">Annulla</button>
-</div>
-</div>
-</div>
 </body>
 </_h>`;
 downloadFile(_h, nomePrev('stampa_'+(tabId==='prev'?'prev':'tec')+'._h'));
@@ -2880,6 +2812,71 @@ document.getElementById('\x73\x63\x6f\x6e\x74\x6f\x2d\x63\x61\x6c\x63\x6f\x6c\x6
 '→ ' + (tipo||'\x6e\x65\x73\x73\x75\x6e\x61\x20\x76\x61\x72\x69\x61\x7a\x69\x6f\x6e\x65') + '\x20\u00b7\x20\x74\x6f\x74\x61\x6c\x65\x20\u20ac\x20' + totaleCalc.toFixed(2).replace('.',',');
 renderPrev();
 }
+function modificaMulti(id){
+const lista = listaCarica();
+const elem = lista.find(e => e.id === id);
+if(!elem || !elem.dati) return;
+const d = elem.dati;
+multiConfig = d.config || 'L';
+multiOrientL = d.orientL || 'dx';
+document.getElementById('ml-nome').value = elem.nome || '';
+document.getElementById('ml-H').value = d.H || 2400;
+const mlVetro = document.getElementById('ml-vetro');
+const mlColore = document.getElementById('\x6d\x6c\x2d\x63\x6f\x6c\x6f\x72\x65');
+if(mlVetro && d.vetro) mlVetro.value = d.vetro;
+if(mlColore && d.colore) mlColore.value = d.colore;
+document.getElementById('ml-cfg-L').classList.toggle('on', multiConfig==='L');
+document.getElementById('ml-cfg-C').classList.toggle('on', multiConfig==='C');
+const ow = document.getElementById('\x6d\x6c\x2d\x6f\x72\x69\x65\x6e\x74\x2d\x77\x72\x61\x70');
+if(ow) ow.style.display = multiConfig==='L' ? '' : 'none';
+document.getElementById('ml-ol-dx').classList.toggle('on', multiOrientL==='dx');
+document.getElementById('ml-ol-sx').classList.toggle('on', multiOrientL==='sx');
+buildMultiLati();
+const container = document.getElementById('ml-lati');
+if(d.lati) {
+d.lati.forEach((lato, i) => {
+const div = container.querySelectorAll('\x5b\x64\x61\x74\x61\x2d\x6c\x61\x74\x6f\x5d')[i];
+if(!div) return;
+const lL = div.querySelector('.ml-L');
+const lImp = div.querySelector('.ml-imp');
+const lPom = div.querySelector('.ml-pom');
+const lPomH = div.querySelector('.ml-pomH');
+const lSer = div.querySelector('.ml-ser');
+const lSerH = div.querySelector('.ml-serH');
+if(lL) lL.value = lato.L || 3000;
+if(lImp && lato.imp) lImp.value = lato.imp;
+if(lPom && lato.pom) lPom.value = lato.pom;
+if(lPomH) lPomH.value = lato.pomH || 1000;
+if(lSer) { lSer.checked = !!lato.ser; toggleMlSer(lSer); }
+if(lSerH) lSerH.value = lato.serH || 1000;
+aggiornaMultiApertura(lL);
+});
+}
+aggiornaMultiPreview();
+_editingMultiId = id;
+document.getElementById('\x6d\x6f\x64\x61\x6c\x2d\x6d\x75\x6c\x74\x69').classList.add('open');
+}
+var _editingMultiId = null;
+const _salvaMultiOrig = salvaMulti;
+salvaMulti = function(){
+if(_editingMultiId){
+const id = _editingMultiId;
+_editingMultiId = null;
+const lista = listaCarica();
+const idx = lista.findIndex(e => e.id === id);
+_salvaMultiOrig(); 
+const updated = listaCarica();
+const newElem = updated[updated.length - 1];
+newElem.id = id; 
+const newLista = lista.filter(e => e.id !== id);
+newLista.splice(idx, 0, newElem);
+listaSalva(newLista);
+renderLista();
+renderPrev();
+} else {
+_salvaMultiOrig();
+}
+};
 function renderPrev(){
 var _commerciale = '\x42\x34\x43\x20\x53\x2e\x72\x2e\x6c\x2e';
 try {
@@ -3015,6 +3012,8 @@ let mqTotali=0;
 lista.forEach(e=>{
 if(e.S&&e.S.La&&e.S.Ha&&e.S.nL){
 mqTotali+=+(e.S.La/1000*e.S.Ha/1000*e.S.nL).toFixed(3);
+} else if(e.dati&&e.dati.mqTot){
+mqTotali+=+e.dati.mqTot;
 } else if(e.dati&&e.dati.mq){
 mqTotali+=+e.dati.mq;
 }
@@ -4303,5 +4302,44 @@ alert('Errore: '+JSON.stringify(e));
     </div>
   </div>
 </div>
+
+<!-- ════════ MODAL LOGO E DATI AZIENDALI ════════ -->
+<div class="modal-overlay" id="modal-azienda" onclick="chiudiModal(event,'azienda')">
+  <div class="modal-box" style="max-width:580px;" onclick="event.stopPropagation()">
+    <div class="modal-title">🏢 Logo e dati aziendali</div>
+
+    <div style="margin-bottom:1rem;">
+      <div style="font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;">Logo aziendale</div>
+      <div id="az-logo-preview" style="margin-bottom:.5rem;min-height:24px;"></div>
+      <label style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;cursor:pointer;">
+        📎 Carica logo (max 500 KB)
+        <input type="file" accept="image/*" style="display:none;" onchange="caricaLogoAz(this)">
+      </label>
+      <button onclick="rimuoviLogoAz()" style="margin-left:.4rem;padding:5px 10px;background:none;border:1px solid var(--bdr);border-radius:var(--r);font-size:11px;color:var(--muted);cursor:pointer;">✕ Rimuovi</button>
+      <div style="font-size:10px;color:var(--hint);margin-top:.25rem;">PNG o SVG — appare nell'intestazione del PDF preventivo</div>
+    </div>
+
+    <div style="font-size:10px;font-family:var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;">Dati aziendali</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem .75rem;">
+      <div class="f"><label>Ragione sociale</label><input type="text" id="az-ragione" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="B4C S.r.l."></div>
+      <div class="f"><label>P. IVA</label><input type="text" id="az-piva" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="03043140908"></div>
+      <div class="f"><label>Indirizzo</label><input type="text" id="az-indirizzo" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="Via Taramelli 6, 07100 Sassari"></div>
+      <div class="f"><label>Telefono</label><input type="text" id="az-tel" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="+39 079..."></div>
+      <div class="f"><label>Email</label><input type="email" id="az-email" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="info@b4csrl.it"></div>
+      <div class="f"><label>Sito web</label><input type="text" id="az-web" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="www.b4c-srl.it"></div>
+      <div class="f"><label>IBAN</label><input type="text" id="az-iban" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="IT..."></div>
+      <div class="f"><label>Codice fiscale</label><input type="text" id="az-cf" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);" placeholder="03043140908"></div>
+    </div>
+    <div class="f" style="margin-top:.4rem;"><label>Note aggiuntive</label>
+      <textarea id="az-note" rows="2" style="width:100%;padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;background:var(--surf2);resize:vertical;" placeholder="Es. Registro Imprese SS..."></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="add-btn" style="margin-top:0;" onclick="salvaDatiAzienda()">💾 Salva e applica</button>
+      <button class="vi-btn" onclick="chiudiModal(null,'azienda')">Annulla</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
