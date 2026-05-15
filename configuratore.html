@@ -2027,7 +2027,7 @@ downloadFile(jsonStr, nomePrev('json'));
 }
 function stampa(tabId, modalita){
 if(tabId==='prev') renderPrev();
-const _st=Array.from(document.styleSheets).map(ss=>{
+const styles=Array.from(document.styleSheets).map(ss=>{
 try{return Array.from(ss.cssRules).map(r=>r.cssText).join('\n');}catch(e){return '';}
 }).join('\n');
 const az=document.getElementById('prev-az')?document.getElementById('prev-az').value.trim():'';
@@ -2036,13 +2036,13 @@ const num=(document.getElementById('prev-num')?document.getElementById('prev-num
 const titolo=tabId==='prev'
 ?([cli||az,'Prev'+num].filter(Boolean).join(' — '))
 :'\x56\x65\x72\x69\x66\x69\x63\x61\x20\x74\x65\x63\x6e\x69\x63\x61\x20\u2014\x20\x56\x45\x50\x41';
-var _ct='';
+var contenuto='';
 if(tabId==='prev'){
 if(modalita==='\x72\x69\x65\x70\x69\x6c\x6f\x67\x6f'){
-const _pd=document.getElementById('prev-doc');
-if(!_pd) return;
+const prevDoc=document.getElementById('prev-doc');
+if(!prevDoc) return;
 const tmp=document.createElement('div');
-tmp.innerHTML=_pd.innerHTML;
+tmp.innerHTML=prevDoc.innerHTML;
 var intestazione='';
 const hdr=tmp.querySelector('\x2e\x70\x72\x65\x76\x2d\x68\x65\x61\x64\x65\x72');
 if(hdr) intestazione+=hdr.outerHTML;
@@ -2079,7 +2079,7 @@ righe+='\x3c\x74\x72\x20\x73\x74\x79\x6c\x65\x3d\x22\x62\x61\x63\x6b\x67\x72\x6f
 '\x3c\x74\x64\x20\x73\x74\x79\x6c\x65\x3d\x22\x70\x61\x64\x64\x69\x6e\x67\x3a\x37\x70\x78\x20\x31\x30\x70\x78\x3b\x62\x6f\x72\x64\x65\x72\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x65\x32\x64\x66\x64\x38\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x31\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x35\x35\x35\x3b\x22\x3e'+vociDesc+'</td>'+
 '</tr>';
 });
-_ct=intestazione+
+contenuto=intestazione+
 '\x3c\x74\x61\x62\x6c\x65\x20\x73\x74\x79\x6c\x65\x3d\x22\x77\x69\x64\x74\x68\x3a\x31\x30\x30\x25\x3b\x62\x6f\x72\x64\x65\x72\x2d\x63\x6f\x6c\x6c\x61\x70\x73\x65\x3a\x63\x6f\x6c\x6c\x61\x70\x73\x65\x3b\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x31\x72\x65\x6d\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x32\x70\x78\x3b\x22\x3e'+
 '\x3c\x74\x68\x65\x61\x64\x3e\x3c\x74\x72\x20\x73\x74\x79\x6c\x65\x3d\x22\x62\x61\x63\x6b\x67\x72\x6f\x75\x6e\x64\x3a\x23\x30\x66\x32\x33\x34\x30\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x66\x66\x66\x3b\x22\x3e'+
 '\x3c\x74\x68\x20\x73\x74\x79\x6c\x65\x3d\x22\x70\x61\x64\x64\x69\x6e\x67\x3a\x37\x70\x78\x20\x31\x30\x70\x78\x3b\x74\x65\x78\x74\x2d\x61\x6c\x69\x67\x6e\x3a\x6c\x65\x66\x74\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x6d\x6f\x6e\x6f\x73\x70\x61\x63\x65\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x31\x70\x78\x3b\x22\x3e\x23\x3c\x2f\x74\x68\x3e'+
@@ -2096,21 +2096,21 @@ _ct=intestazione+
 '\x3c\x64\x69\x76\x20\x63\x6c\x61\x73\x73\x3d\x22\x70\x74\x2d\x72\x6f\x77\x20\x66\x69\x6e\x61\x6c\x22\x3e\x3c\x73\x70\x61\x6e\x3e\x54\x4f\x54\x41\x4c\x45\x20\x49\x56\x41\x20\x49\x4e\x43\x4c\x55\x53\x41\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x73\x70\x61\x6e\x3e\u20ac\x20'+fmt(totale)+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e'+
 '</div>';
 const footer=document.getElementById('\x70\x72\x69\x6e\x74\x2d\x66\x6f\x6f\x74\x65\x72\x2d\x70\x72\x65\x76');
-if(footer&&footer.innerHTML) _ct+='\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x32\x72\x65\x6d\x3b\x70\x61\x64\x64\x69\x6e\x67\x2d\x74\x6f\x70\x3a\x2e\x37\x35\x72\x65\x6d\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x63\x63\x63\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x38\x38\x38\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x6d\x6f\x6e\x6f\x73\x70\x61\x63\x65\x3b\x22\x3e'+footer.innerHTML+'</div>';
+if(footer&&footer.innerHTML) contenuto+='\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x32\x72\x65\x6d\x3b\x70\x61\x64\x64\x69\x6e\x67\x2d\x74\x6f\x70\x3a\x2e\x37\x35\x72\x65\x6d\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x63\x63\x63\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x38\x38\x38\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x6d\x6f\x6e\x6f\x73\x70\x61\x63\x65\x3b\x22\x3e'+footer.innerHTML+'</div>';
 const chkCR=document.getElementById('\x63\x68\x6b\x2d\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69');
 const condElR=document.querySelector('\x2e\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69\x2d\x76\x65\x6e\x64\x69\x74\x61');
 if(chkCR&&chkCR.checked&&condElR){
-_ct+=condElR.outerHTML;
+contenuto+=condElR.outerHTML;
 }
 } else {
-const _pd=document.getElementById('prev-doc');
-if(_pd) _ct=_pd.innerHTML;
+const prevDoc=document.getElementById('prev-doc');
+if(prevDoc) contenuto=prevDoc.innerHTML;
 const footer=document.getElementById('\x70\x72\x69\x6e\x74\x2d\x66\x6f\x6f\x74\x65\x72\x2d\x70\x72\x65\x76');
-if(footer&&footer.innerHTML) _ct+='\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x32\x72\x65\x6d\x3b\x70\x61\x64\x64\x69\x6e\x67\x2d\x74\x6f\x70\x3a\x2e\x37\x35\x72\x65\x6d\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x63\x63\x63\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x38\x38\x38\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x6d\x6f\x6e\x6f\x73\x70\x61\x63\x65\x3b\x22\x3e'+footer.innerHTML+'</div>';
+if(footer&&footer.innerHTML) contenuto+='\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x32\x72\x65\x6d\x3b\x70\x61\x64\x64\x69\x6e\x67\x2d\x74\x6f\x70\x3a\x2e\x37\x35\x72\x65\x6d\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x63\x63\x63\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x38\x38\x38\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x6d\x6f\x6e\x6f\x73\x70\x61\x63\x65\x3b\x22\x3e'+footer.innerHTML+'</div>';
 const chkC=document.getElementById('\x63\x68\x6b\x2d\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69');
 const condEl=document.querySelector('\x2e\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69\x2d\x76\x65\x6e\x64\x69\x74\x61');
-if(chkC&&chkC.checked&&condEl&&!_ct.includes('\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69\x2d\x76\x65\x6e\x64\x69\x74\x61')){
-_ct+=condEl.outerHTML;
+if(chkC&&chkC.checked&&condEl&&!contenuto.includes('\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69\x2d\x76\x65\x6e\x64\x69\x74\x61')){
+contenuto+=condEl.outerHTML;
 }
 }
 } else {
@@ -2119,9 +2119,9 @@ if(!panel) return;
 const clone=panel.cloneNode(true);
 clone.querySelectorAll('\x2e\x6e\x6f\x2d\x70\x72\x69\x6e\x74\x2c\x2e\x70\x72\x69\x6e\x74\x2d\x62\x74\x6e\x2c\x2e\x61\x64\x64\x2d\x62\x74\x6e\x2c\x2e\x76\x69\x2d\x62\x74\x6e\x2c\x2e\x6d\x6f\x64\x61\x6c\x2d\x6f\x76\x65\x72\x6c\x61\x79').forEach(el=>el.remove());
 clone.querySelectorAll('.vi-body').forEach(el=>el.style.display='block');
-_ct=clone.innerHTML;
+contenuto=clone.innerHTML;
 }
-const _h=`<!DOCTYPE html>
+const html=`<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -2150,7 +2150,7 @@ ${contenuto}
 <button class="btn-stampa" onclick="window.print()" style="margin-top:1.5rem;">🖨 Stampa / Salva PDF</button>
 </body>
 </html>`;
-downloadFile(_h, nomePrev('stampa_'+(tabId==='prev'?'prev':'tec')+'.html'));
+downloadFile(html, nomePrev('stampa_'+(tabId==='prev'?'prev':'tec')+'.html'));
 }
 const LS_CANTIERE='\x76\x65\x70\x61\x5f\x63\x61\x6e\x74\x69\x65\x72\x65\x5f\x76\x31';
 function salvaCantiere(){
@@ -2899,9 +2899,9 @@ const data=document.getElementById('\x70\x72\x65\x76\x2d\x64\x61\x74\x61').value
 const note=document.getElementById('\x70\x72\x65\x76\x2d\x6e\x6f\x74\x65').value||'';
 const sconto=+document.getElementById('sconto').value/100;
 const ivaRate=+document.getElementById('iva-sel').value;
-const _pd=document.getElementById('prev-doc');
+const prevDoc=document.getElementById('prev-doc');
 if(lista.length===0){
-_pd.innerHTML='\x3c\x70\x20\x73\x74\x79\x6c\x65\x3d\x22\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x75\x74\x65\x64\x29\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x33\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x6f\x6e\x6f\x29\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x2e\x37\x35\x72\x65\x6d\x20\x30\x3b\x22\x3e\x41\x67\x67\x69\x75\x6e\x67\x69\x20\x61\x6c\x6d\x65\x6e\x6f\x20\x75\x6e\x61\x20\x76\x65\x74\x72\x61\x74\x61\x20\x64\x61\x6c\x6c\x61\x20\x74\x61\x62\x20\x22\x56\x65\x72\x69\x66\x69\x63\x61\x20\x74\x65\x63\x6e\x69\x63\x61\x22\x20\x70\x65\x72\x20\x67\x65\x6e\x65\x72\x61\x72\x65\x20\x69\x6c\x20\x64\x6f\x63\x75\x6d\x65\x6e\x74\x6f\x2e\x3c\x2f\x70\x3e';
+prevDoc.innerHTML='\x3c\x70\x20\x73\x74\x79\x6c\x65\x3d\x22\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x75\x74\x65\x64\x29\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x33\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x6f\x6e\x6f\x29\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x2e\x37\x35\x72\x65\x6d\x20\x30\x3b\x22\x3e\x41\x67\x67\x69\x75\x6e\x67\x69\x20\x61\x6c\x6d\x65\x6e\x6f\x20\x75\x6e\x61\x20\x76\x65\x74\x72\x61\x74\x61\x20\x64\x61\x6c\x6c\x61\x20\x74\x61\x62\x20\x22\x56\x65\x72\x69\x66\x69\x63\x61\x20\x74\x65\x63\x6e\x69\x63\x61\x22\x20\x70\x65\x72\x20\x67\x65\x6e\x65\x72\x61\x72\x65\x20\x69\x6c\x20\x64\x6f\x63\x75\x6d\x65\x6e\x74\x6f\x2e\x3c\x2f\x70\x3e';
 return;
 }
 const cantiere = (function(){try{return JSON.parse(localStorage.getItem(LS_CANTIERE)||'{}')}catch(e){return {}}}());
@@ -2936,7 +2936,7 @@ ${_indir ? `<div style="\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78
 ${(_telAz||_emailAz) ? `<div style="\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x75\x74\x65\x64\x29\x3b">${[_telAz,_emailAz].filter(Boolean).join(' · ')}</div>` : ''}
 ${_webAz ? `<div style="\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x75\x74\x65\x64\x29\x3b">${_webAz}</div>` : ''}
 `;
-let _h=`
+let html=`
 <div class="prev-header">
 <div>
 ${_aziendaHtml}
@@ -2961,7 +2961,7 @@ const install_c= (document.getElementById('\x70\x72\x65\x76\x2d\x69\x6e\x73\x74\
 const email_c = (document.getElementById('\x70\x72\x65\x76\x2d\x65\x6d\x61\x69\x6c')&&document.getElementById('\x70\x72\x65\x76\x2d\x65\x6d\x61\x69\x6c').value||'').trim();
 const tel_c = (document.getElementById('prev-tel')&&document.getElementById('prev-tel').value||'').trim();
 const resid_c = [via_c+(civ_c?' '+civ_c:''), cap_c&&com_c?(cap_c+' '+com_c+(prv_c?' ('+prv_c+')':'')):'', stato_c&&stato_c!=='Italia'?stato_c:''].filter(Boolean).join(' — ');
-_h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem;margin-bottom:1rem;padding:10px 12px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bdr-lt);font-size:11px;font-family:var(--mono);">
+html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem;margin-bottom:1rem;padding:10px 12px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bdr-lt);font-size:11px;font-family:var(--mono);">
 <div style="grid-column:1/-1;font-weight:700;font-size:12px;margin-bottom:4px;">${(cogn_c+' '+nome_c).trim()||'—'}</div>
 ${cf_c?'<div><span style="color:var(--muted);">C.F.: </span>'+cf_c+'</div>':''}
 ${email_c?'<div><span style="color:var(--muted);">Email: </span>'+email_c+'</div>':''}
@@ -2970,7 +2970,7 @@ ${resid_c?'<div style="grid-column:1/-1;"><span style="color:var(--muted);">Resi
 ${install_c?'<div style="grid-column:1/-1;"><span style="color:var(--muted);">Installazione: </span><b>'+install_c+'</b></div>':''}
 </div>`;
 const cantiereStr = _getCantiere() || (comuneNome ? (comuneNome + (cantiere.prv?', '+cantiere.prv:'')) : '—');
-_h+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;padding:8px 12px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bdr-lt);font-size:11px;font-family:var(--mono);">
+html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;padding:8px 12px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bdr-lt);font-size:11px;font-family:var(--mono);">
 <div><span style="color:var(--muted);">Cantiere: </span><b>${cantiereStr}</b></div>
 <div><span style="color:var(--muted);">Piano: </span>${pianoLbl}</div>
 <div><span style="color:var(--muted);">Colorazione profili: </span>${coloreLbl}</div>
@@ -2982,7 +2982,7 @@ e.voci = calcolaVoci(e.S);
 e.subtot = +e.voci.filter(v=>!v.noPrice).reduce((s,v)=>s+v.tot,0).toFixed(2);
 }
 const urColor=e.S?(e.S.ur<=0.8?'#1a5c35':e.S.ur<=1?'#b35c00':'#8b1a1a'):'#6e6a62';
-_h+=`<div style="margin-bottom:1.25rem;border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;">
+html+=`<div style="margin-bottom:1.25rem;border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;">
 <div style="background:var(--surf2);padding:8px 12px;border-bottom:1px solid var(--bdr-lt);display:flex;justify-content:space-between;align-items:center;">
 <div>
 <span style="font-family:var(--mono);font-size:11px;color:var(--muted);">${i+1}.</span>
@@ -2997,9 +2997,9 @@ e.voci.forEach(v=>{
 const totStr=v.noPrice?'—':fmt(v.tot);
 const puStr=v.noPrice?'incluso':v.pu;
 const rs=v.noPrice?'\x6f\x70\x61\x63\x69\x74\x79\x3a\x2e\x36\x35\x3b\x66\x6f\x6e\x74\x2d\x73\x74\x79\x6c\x65\x3a\x69\x74\x61\x6c\x69\x63\x3b':'';
-_h+=`<tr style="${rs}"><td>${v.desc}</td><td>${v.q}</td><td>${v.um}</td><td>${puStr}</td><td>${totStr}</td></tr>`;
+html+=`<tr style="${rs}"><td>${v.desc}</td><td>${v.q}</td><td>${v.um}</td><td>${puStr}</td><td>${totStr}</td></tr>`;
 });
-_h+=`</tbody></table></div>
+html+=`</tbody></table></div>
 <div style="padding:6px 12px 8px;text-align:right;font-family:var(--mono);font-size:12px;font-weight:600;border-top:1px solid var(--bdr-lt);">
 Subtotale: € ${fmt(e.subtot)}
 </div>
@@ -3021,10 +3021,10 @@ mqTotali+=+e.dati.mq;
 }
 });
 mqTotali=+mqTotali.toFixed(2);
-_h+=`<div class="prev-total-box" style="position:sticky;bottom:0;margin-top:1rem;">
+html+=`<div class="prev-total-box" style="position:sticky;bottom:0;margin-top:1rem;">
 <div class="pt-row"><span>${lista.length} element${lista.length===1?'o':'i'} configurati</span><span>€ ${fmt(totSubtot)}</span></div>`;
-if(sconto!==0) _h+=`<div class="pt-row" style="color:${sconto>0?'#8ecfaa':'#f4a460'};"><span>${sconto>0?'Sconto':'Ricarico'} ${Math.abs(sconto*100).toFixed(1)}%</span><span>${sconto>0?'− ':'+ '}€ ${fmt(Math.abs(scontoEur))}</span></div>`;
-_h+=`<div class="pt-row"><span>Imponibile</span><span>€ ${fmt(imponibile)}</span></div>
+if(sconto!==0) html+=`<div class="pt-row" style="color:${sconto>0?'#8ecfaa':'#f4a460'};"><span>${sconto>0?'Sconto':'Ricarico'} ${Math.abs(sconto*100).toFixed(1)}%</span><span>${sconto>0?'− ':'+ '}€ ${fmt(Math.abs(scontoEur))}</span></div>`;
+html+=`<div class="pt-row"><span>Imponibile</span><span>€ ${fmt(imponibile)}</span></div>
 <div class="pt-row"><span>IVA ${(ivaRate*100).toFixed(0)}%${ivaRate===0.10?' (manut. straordinaria)':''}</span><span>€ ${fmt(ivaEur)}</span></div>
 <div class="pt-row final"><span>TOTALE</span><span>€ ${fmt(totale)}</span></div>
 </div>`;
@@ -3033,7 +3033,7 @@ const prezzoMqIva=+(totale/mqTotali).toFixed(2);
 const prezzoMqNoIva=+(imponibile/mqTotali).toFixed(2);
 const minContr=P.minContr||3181;
 const sottoMin=totale<minContr;
-_h+=`<div class="no-print" style="margin-top:.5rem;position:relative;">
+html+=`<div class="no-print" style="margin-top:.5rem;position:relative;">
 <div id="stat-trigger" title="Statistiche commerciali" 
 style="display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;font-family:var(--mono);color:var(--muted);opacity:.35;padding:8px 14px;border-radius:var(--r);user-select:none;min-height:40px;-webkit-tap-highlight-color:transparent;"
 onclick="_toggleStat()"
@@ -3060,7 +3060,7 @@ ${sottoMin ? '<div style="margin-top:.5rem;font-size:10px;color:#e85d14;font-fam
 </div></div>`;
 }
 if (document.getElementById('\x63\x68\x6b\x2d\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69') && document.getElementById('\x63\x68\x6b\x2d\x63\x6f\x6e\x64\x69\x7a\x69\x6f\x6e\x69').checked) {
-_h += `<div style="margin-top:2rem;padding-top:1rem;border-top:2px solid #ccc;" class="condizioni-vendita">
+html += `<div style="margin-top:2rem;padding-top:1rem;border-top:2px solid #ccc;" class="condizioni-vendita">
 <div style="font-family:monospace;font-size:10px;font-weight:700;letter-spacing:.08em;color:#444;margin-bottom:.5rem;text-transform:uppercase;">Condizioni Generali di Vendita — B4C S.r.l.</div>
 <table style="width:100%;border-collapse:collapse;font-size:7.5px;">
 <tbody>
@@ -3084,7 +3084,7 @@ _h += `<div style="margin-top:2rem;padding-top:1rem;border-top:2px solid #ccc;" 
 </div>
 </div>`;
 }
-_pd.innerHTML=_h;
+prevDoc.innerHTML=html;
 document.getElementById('\x70\x72\x69\x6e\x74\x2d\x66\x6f\x6f\x74\x65\x72\x2d\x70\x72\x65\x76').innerHTML=`NTC 2018 §3.3 · CNR-DT 210:2013 · UNI 11998:2025 · EN 13474 · EN 12150 · Preventivo commerciale non sostitutivo della relazione tecnica asseverata.<br>Generato: ${new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})} — ${az}`;
 }
 function modificaProdottoLibero(id) {
