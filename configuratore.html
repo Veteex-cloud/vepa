@@ -1008,6 +1008,48 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       </select>
     </div>
 
+    <!-- Condizioni di pagamento -->
+    <div class="f" style="grid-column:1/-1;border-top:1px solid var(--bdr-lt);padding-top:.75rem;margin-top:.25rem;">
+      <label style="font-weight:600;">Condizioni di pagamento</label>
+      <div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:.4rem .6rem;align-items:center;margin-top:.4rem;font-size:12px;">
+
+        <!-- 1° Acconto -->
+        <span style="font-family:var(--mono);color:var(--muted);white-space:nowrap;">1° Acconto</span>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <select id="pag-acc1-tipo" onchange="renderPrev()" style="padding:4px 6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:11px;font-family:var(--mono);">
+            <option value="pct">%</option>
+            <option value="eur">€</option>
+          </select>
+          <input type="number" id="pag-acc1-val" value="50" min="0" step="1" oninput="renderPrev()"
+            style="width:70px;padding:4px 6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;font-family:var(--mono);">
+          <span style="color:var(--muted);font-size:11px;" id="pag-acc1-calc"></span>
+        </div>
+        <span style="font-family:var(--mono);color:var(--muted);white-space:nowrap;">alla firma</span>
+        <span></span>
+
+        <!-- 2° Acconto (opzionale) -->
+        <span style="font-family:var(--mono);color:var(--muted);white-space:nowrap;">2° Acconto</span>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <select id="pag-acc2-tipo" onchange="renderPrev()" style="padding:4px 6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:11px;font-family:var(--mono);">
+            <option value="nessuno">— nessuno —</option>
+            <option value="pct">%</option>
+            <option value="eur">€</option>
+          </select>
+          <input type="number" id="pag-acc2-val" value="0" min="0" step="1" oninput="renderPrev()"
+            style="width:70px;padding:4px 6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;font-family:var(--mono);" id="pag-acc2-val">
+          <span style="color:var(--muted);font-size:11px;" id="pag-acc2-calc"></span>
+        </div>
+        <span style="font-family:var(--mono);color:var(--muted);white-space:nowrap;">scadenza</span>
+        <input type="text" id="pag-acc2-scad" placeholder="es. 30 gg. / 15/09/2026"
+          style="padding:4px 6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:11px;" oninput="renderPrev()">
+
+        <!-- Saldo -->
+        <span style="font-family:var(--mono);color:var(--muted);white-space:nowrap;">Saldo</span>
+        <span style="font-family:var(--mono);font-size:11px;" id="pag-saldo-calc" style="color:var(--muted);"></span>
+        <span style="font-family:var(--mono);color:var(--muted);white-space:nowrap;grid-column:3/5;font-size:11px;">ad avviso di merce pronta</span>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1438,6 +1480,11 @@ note:document.getElementById('\x70\x72\x65\x76\x2d\x6e\x6f\x74\x65').value||'',
 commerciale:{
 sconto:+document.getElementById('sconto').value||0,
 iva:document.getElementById('iva-sel').value||'0.22',
+pagAcc1tipo:(document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x74\x69\x70\x6f')||{value:'pct'}).value,
+pagAcc1val:+(document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x76\x61\x6c')||{value:50}).value||50,
+pagAcc2tipo:(document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x74\x69\x70\x6f')||{value:'nessuno'}).value,
+pagAcc2val:+(document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x76\x61\x6c')||{value:0}).value||0,
+pagAcc2scad:(document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x73\x63\x61\x64')||{value:''}).value.trim(),
 },
 cantiere: (function(){try{return JSON.parse(localStorage.getItem(LS_CANTIERE)||'{}')}catch(e){return {}}}()),
 elementi:lista,
@@ -1499,6 +1546,11 @@ if(snap.commerciale){
 document.getElementById('sconto').value=snap.commerciale.sconto||0;
 document.getElementById('sc-v').textContent=(snap.commerciale.sconto||0)+'%';
 document.getElementById('iva-sel').value=snap.commerciale.iva||'0.22';
+if(snap.commerciale.pagAcc1tipo) document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x74\x69\x70\x6f').value=snap.commerciale.pagAcc1tipo;
+if(snap.commerciale.pagAcc1val!=null) document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x76\x61\x6c').value=snap.commerciale.pagAcc1val;
+if(snap.commerciale.pagAcc2tipo) document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x74\x69\x70\x6f').value=snap.commerciale.pagAcc2tipo;
+if(snap.commerciale.pagAcc2val!=null) document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x76\x61\x6c').value=snap.commerciale.pagAcc2val;
+if(snap.commerciale.pagAcc2scad!=null) document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x73\x63\x61\x64').value=snap.commerciale.pagAcc2scad;
 }
 if(snap.cantiere&&Object.keys(snap.cantiere).length){
 localStorage.setItem(LS_CANTIERE,JSON.stringify(snap.cantiere));
@@ -2959,20 +3011,20 @@ const install_c= (document.getElementById('\x70\x72\x65\x76\x2d\x69\x6e\x73\x74\
 const email_c = (document.getElementById('\x70\x72\x65\x76\x2d\x65\x6d\x61\x69\x6c')&&document.getElementById('\x70\x72\x65\x76\x2d\x65\x6d\x61\x69\x6c').value||'').trim();
 const tel_c = (document.getElementById('prev-tel')&&document.getElementById('prev-tel').value||'').trim();
 const resid_c = [via_c+(civ_c?' '+civ_c:''), cap_c&&com_c?(cap_c+' '+com_c+(prv_c?' ('+prv_c+')':'')):'', stato_c&&stato_c!=='Italia'?stato_c:''].filter(Boolean).join(' — ');
-html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem;margin-bottom:1rem;padding:10px 12px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bdr-lt);font-size:11px;font-family:var(--mono);">
-<div style="grid-column:1/-1;font-weight:700;font-size:12px;margin-bottom:4px;">${(cogn_c+' '+nome_c).trim()||'—'}</div>
-${cf_c?'<div><span style="color:var(--muted);">C.F.: </span>'+cf_c+'</div>':''}
-${email_c?'<div><span style="color:var(--muted);">Email: </span>'+email_c+'</div>':''}
-${tel_c?'<div><span style="color:var(--muted);">Tel.: </span>'+tel_c+'</div>':''}
-${resid_c?'<div style="grid-column:1/-1;"><span style="color:var(--muted);">Residenza: </span>'+resid_c+'</div>':''}
-${install_c?'<div style="grid-column:1/-1;"><span style="color:var(--muted);">Installazione: </span><b>'+install_c+'</b></div>':''}
+html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem .75rem;margin-bottom:1rem;padding:10px 12px;background:#f7f5f1;border-radius:4px;border:1px solid #d8d4cc;font-size:11px;font-family:'DM Mono',monospace;">
+<div style="grid-column:1/-1;font-weight:700;font-size:13px;margin-bottom:4px;color:#1a1a1a;">${(cogn_c+' '+nome_c).trim()||'—'}</div>
+${cf_c?'<div><span style="color:#888;">C.F.: </span>'+cf_c+'</div>':''}
+${email_c?'<div><span style="color:#888;">Email: </span>'+email_c+'</div>':''}
+${tel_c?'<div><span style="color:#888;">Tel.: </span>'+tel_c+'</div>':''}
+${resid_c?'<div style="grid-column:1/-1;"><span style="color:#888;">Residenza: </span>'+resid_c+'</div>':''}
+${install_c?'<div style="grid-column:1/-1;"><span style="color:#888;">Installazione: </span><b>'+install_c+'</b></div>':''}
 </div>`;
 const cantiereStr = _getCantiere() || (comuneNome ? (comuneNome + (cantiere.prv?', '+cantiere.prv:'')) : '—');
-html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;padding:8px 12px;background:var(--surf2);border-radius:var(--r);border:1px solid var(--bdr-lt);font-size:11px;font-family:var(--mono);">
-<div><span style="color:var(--muted);">Cantiere: </span><b>${cantiereStr}</b></div>
-<div><span style="color:var(--muted);">Piano: </span>${pianoLbl}</div>
-<div><span style="color:var(--muted);">Colorazione profili: </span>${coloreLbl}</div>
-${note?'<div style="grid-column:1/-1;"><span style="color:var(--muted);">Note: </span>'+note+'</div>':''}
+html+=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem;padding:8px 12px;background:#f7f5f1;border-radius:4px;border:1px solid #d8d4cc;font-size:11px;font-family:'DM Mono',monospace;">
+<div><span style="color:#888;">Cantiere: </span><b>${cantiereStr}</b></div>
+<div><span style="color:#888;">Piano: </span>${pianoLbl}</div>
+<div><span style="color:#888;">Colorazione profili: </span>${coloreLbl}</div>
+${note?'<div style="grid-column:1/-1;"><span style="color:#888;">Note: </span>'+note+'</div>':''}
 </div>`;
 lista.forEach((e,i)=>{
 if(e.S && e.S.Lt){
@@ -3025,6 +3077,44 @@ if(sconto!==0) html+=`<div class="pt-row" style="color:${sconto>0?'#8ecfaa':'#f4
 html+=`<div class="pt-row"><span>Imponibile</span><span>€ ${fmt(imponibile)}</span></div>
 <div class="pt-row"><span>IVA ${(ivaRate*100).toFixed(0)}%${ivaRate===0.10?' (manut. straordinaria)':''}</span><span>€ ${fmt(ivaEur)}</span></div>
 <div class="pt-row final"><span>TOTALE</span><span>€ ${fmt(totale)}</span></div>
+</div>`;
+const _pag = (function(){
+const acc1tipo = (document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x74\x69\x70\x6f')||{value:'pct'}).value;
+const acc1val = +(document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x76\x61\x6c')||{value:50}).value || 50;
+const acc2tipo = (document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x74\x69\x70\x6f')||{value:'nessuno'}).value;
+const acc2val = +(document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x76\x61\x6c')||{value:0}).value || 0;
+const acc2scad = (document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x73\x63\x61\x64')||{value:''}).value.trim();
+const acc1eur = acc1tipo==='pct' ? +(totale * acc1val/100).toFixed(2) : Math.min(acc1val, totale);
+const acc1pct = +(acc1eur/totale*100).toFixed(1);
+let acc2eur=0, acc2pct=0;
+if(acc2tipo!=='nessuno' && acc2val>0){
+acc2eur = acc2tipo==='pct' ? +(totale * acc2val/100).toFixed(2) : Math.min(acc2val, totale-acc1eur);
+acc2pct = +(acc2eur/totale*100).toFixed(1);
+}
+const saldoEur = +(totale - acc1eur - acc2eur).toFixed(2);
+const saldoPct = +(saldoEur/totale*100).toFixed(1);
+const c1 = document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x63\x61\x6c\x63');
+const c2 = document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x32\x2d\x63\x61\x6c\x63');
+const cs = document.getElementById('\x70\x61\x67\x2d\x73\x61\x6c\x64\x6f\x2d\x63\x61\x6c\x63');
+if(c1) c1.textContent = acc1tipo==='pct' ? '→ €'+fmt(acc1eur) : acc1pct+'%';
+if(c2) c2.textContent = acc2tipo!=='nessuno'&&acc2val>0 ? (acc2tipo==='pct'?'→ €'+fmt(acc2eur):acc2pct+'%') : '';
+if(cs) cs.textContent = '€ '+fmt(saldoEur)+' ('+saldoPct+'%)';
+return {acc1eur,acc1pct,acc2eur,acc2pct,acc2scad,acc2tipo,saldoEur,saldoPct};
+})();
+html+=`<div style="margin-top:1rem;padding:10px 14px;background:#f7f5f1;border-radius:4px;border:1px solid #d8d4cc;font-size:11px;font-family:'DM Mono',monospace;">
+<div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#555;margin-bottom:.5rem;">Condizioni di pagamento</div>
+<div style="display:grid;grid-template-columns:auto 1fr auto;gap:.3rem .75rem;align-items:baseline;">
+<span style="color:#888;">1° Acconto alla firma</span>
+<span style="border-bottom:1px dashed #ccc;"></span>
+<span style="font-weight:700;text-align:right;">€ ${fmt(_pag.acc1eur)} <span style="font-weight:400;color:#888;">(${_pag.acc1pct}%)</span></span>
+${_pag.acc2tipo!=='nessuno'&&_pag.acc2eur>0?`
+<span style="\x63\x6f\x6c\x6f\x72\x3a\x23\x38\x38\x38\x3b">2° Acconto${_pag.acc2scad?' — '+_pag.acc2scad:''}</span>
+<span style="\x62\x6f\x72\x64\x65\x72\x2d\x62\x6f\x74\x74\x6f\x6d\x3a\x31\x70\x78\x20\x64\x61\x73\x68\x65\x64\x20\x23\x63\x63\x63\x3b"></span>
+<span style="\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x37\x30\x30\x3b\x74\x65\x78\x74\x2d\x61\x6c\x69\x67\x6e\x3a\x72\x69\x67\x68\x74\x3b">€ ${fmt(_pag.acc2eur)} <span style="\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x34\x30\x30\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x38\x38\x38\x3b">(${_pag.acc2pct}%)</span></span>`:''}
+<span style="color:#888;">Saldo ad avviso di merce pronta</span>
+<span style="border-bottom:1px dashed #ccc;"></span>
+<span style="font-weight:700;text-align:right;">€ ${fmt(_pag.saldoEur)} <span style="font-weight:400;color:#888;">(${_pag.saldoPct}%)</span></span>
+</div>
 </div>`;
 if(mqTotali>0 && totale>0){
 const prezzoMqIva=+(totale/mqTotali).toFixed(2);
