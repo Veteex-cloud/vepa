@@ -339,6 +339,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 @media print{
   body{background:#fff!important;padding:0!important;}
   .topbar,.tabs,.no-print,.print-btn,.save-btn{display:none!important;}
+  nav,.tab-bar,.topbar{display:none!important;}
 
   /* Nasconde tutti i panel per default */
   .panel{display:none!important;}
@@ -349,6 +350,16 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     max-width:100%!important;
     padding:.5cm 1.5cm!important;
   }
+
+  /* Nasconde header e bottoni del panel in stampa */
+  .panel.print-target .panel-header,
+  .panel.print-target .btn-bar,
+  .panel.print-target .sconto-wrap,
+  .panel.print-target .prev-controls,
+  .panel.print-target .pan-actions,
+  .panel.print-target #chk-condizioni-wrap,
+  .panel.print-target .iva-row,
+  .panel.print-target .obiettivo-row {display:none!important;}
 
   /* Verifica tecnica: appiattisce il layout a due colonne */
   #pan-tec.print-target .tec-layout{
@@ -2148,14 +2159,21 @@ ${contenuto}
 <button class="btn-stampa" onclick="window.print()" style="margin-top:1.5rem;">🖨 Stampa / Salva PDF</button>
 </body>
 </html>`;
-try {
-const _blob = new Blob([html], {type:'\x74\x65\x78\x74\x2f\x68\x74\x6d\x6c\x3b\x63\x68\x61\x72\x73\x65\x74\x3d\x75\x74\x66\x2d\x38'});
-const _burl = URL.createObjectURL(_blob);
-const _w = window.open(_burl, '_blank');
-if(!_w) throw new Error('\x70\x6f\x70\x75\x70\x20\x62\x6c\x6f\x63\x63\x61\x74\x6f');
-} catch(_e) {
-downloadFile(html, _fnPrev);
-}
+const _oldTitle = document.title;
+document.title = titolo;
+document.querySelectorAll('.panel').forEach(p => p.classList.remove('\x70\x72\x69\x6e\x74\x2d\x74\x61\x72\x67\x65\x74'));
+const _panId = tabId === 'prev' ? 'pan-prev' : 'pan-tec';
+const _pan = document.getElementById(_panId);
+if(_pan) _pan.classList.add('\x70\x72\x69\x6e\x74\x2d\x74\x61\x72\x67\x65\x74');
+const _noprint = _pan ? _pan.querySelectorAll('\x2e\x6e\x6f\x2d\x70\x72\x69\x6e\x74\x2c\x2e\x70\x72\x69\x6e\x74\x2d\x62\x74\x6e\x2c\x2e\x73\x61\x76\x65\x2d\x62\x74\x6e\x2c\x2e\x62\x74\x6e\x2d\x62\x61\x72\x2c\x2e\x70\x61\x6e\x65\x6c\x2d\x68\x65\x61\x64\x65\x72') : [];
+_noprint.forEach(el => el.dataset._wasVisible = el.style.display || '');
+_noprint.forEach(el => el.style.display = 'none');
+window.print();
+setTimeout(() => {
+document.title = _oldTitle;
+if(_pan) _pan.classList.remove('\x70\x72\x69\x6e\x74\x2d\x74\x61\x72\x67\x65\x74');
+_noprint.forEach(el => { el.style.display = el.dataset._wasVisible || ''; });
+}, 500);
 }
 const LS_CANTIERE='\x76\x65\x70\x61\x5f\x63\x61\x6e\x74\x69\x65\x72\x65\x5f\x76\x31';
 function salvaCantiere(){
