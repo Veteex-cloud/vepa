@@ -3219,6 +3219,7 @@ var tipo=scontoPct>0?scontoPct+'% sconto':scontoPct<0?Math.abs(scontoPct)+'\x25\
 document.getElementById('\x73\x63\x6f\x6e\x74\x6f\x2d\x63\x61\x6c\x63\x6f\x6c\x61\x74\x6f\x2d\x70\x67').textContent='→ '+tipo+'\x20\u00b7\x20\x74\x6f\x74\x61\x6c\x65\x20\u20ac\x20'+fmt2(totCalc);
 }
 function calcPergola(){
+try {
 var larg = +document.getElementById('pg-larg').value;
 var sporg = +document.getElementById('pg-sporg').value;
 var appl = document.getElementById('pg-appl').value;
@@ -3319,6 +3320,11 @@ if(box) box.innerHTML = html;
 window._pgState = {larg,sporg,largTot,sporgTot,nL,nP,nModuli,tipo:_pgTipo,appl,h,colore,coib,scontoPg,ivaPg,totaleScont,totaleIva,
 ledPeri,ledSpot,accRadio,accMotore,accGateway,accPiant,
 piantoniEff,totale,voci,prezzoStruttura};
+} catch(err) {
+var box=document.getElementById('\x70\x67\x2d\x72\x65\x73\x75\x6c\x74');
+if(box) box.innerHTML='\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x63\x6f\x6c\x6f\x72\x3a\x72\x65\x64\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x6d\x6f\x6e\x6f\x73\x70\x61\x63\x65\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x31\x70\x78\x3b\x22\x3e\x45\x72\x72\x6f\x72\x65\x3a\x20'+err.message+'</div>';
+console.error('\x5b\x50\x45\x52\x47\x4f\x4c\x41\x5d', err);
+}
 }
 function salvaPergola(){
 if(!window._pgState){calcPergola();}
