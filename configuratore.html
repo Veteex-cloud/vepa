@@ -461,6 +461,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     <div class="tabs">
       <div class="tab on" onclick="goTab('prev')">Preventivo <span class="tab-badge" id="badge-count" style="display:none;">0</span></div>
       <div class="tab" onclick="goTab('tec')">Verifica tecnica</div>
+      <div class="tab" id="t-perg" onclick="goTab('perg')">🌿 Pergola</div>
     </div>
   </div>
 </div>
@@ -976,6 +977,159 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 </div>
 
 </div><!-- /pan-prev -->
+
+<!-- ════════════════════════════════════════
+     TAB PERGOLA BIOCLIMATICA — KYRIA
+════════════════════════════════════════ -->
+<div class="panel" id="pan-perg">
+
+<div class="cols2">
+  <!-- TIPO E CONFIGURAZIONE -->
+  <div class="card">
+    <div class="ct"><span class="sn">1</span>Tipo struttura</div>
+    <div class="opt-g" style="grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
+      <div class="vt-t on" id="pg-tipo-sin" onclick="setPergTipo('sin')"><div class="vt-n">Singola</div><div class="vt-s">1 modulo</div></div>
+      <div class="vt-t" id="pg-tipo-acc" onclick="setPergTipo('acc')"><div class="vt-n">Accoppiata</div><div class="vt-s">più moduli</div></div>
+    </div>
+    <div id="pg-acc-opts" style="display:none;">
+      <div class="ir" style="margin-top:.5rem;">
+        <div class="f"><label>Moduli in larghezza</label>
+          <select id="pg-n-larg" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:var(--mono);width:100%;">
+            <option value="1">1</option><option value="2" selected>2</option><option value="3">3</option><option value="4">4</option>
+          </select>
+        </div>
+        <div class="f"><label>Moduli in profondità</label>
+          <select id="pg-n-prof" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:var(--mono);width:100%;">
+            <option value="1" selected>1</option><option value="2">2</option><option value="3">3</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="f" style="margin-top:.75rem;"><label>Applicazione</label>
+      <select id="pg-appl" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
+        <option value="auto">Autoportante — 4 piantoni</option>
+        <option value="1lato">Addossata 1 lato — 2 piantoni</option>
+        <option value="angolo">Addossata 2 lati (angolo) — 2 piantoni</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- DIMENSIONI MODULO -->
+  <div class="card">
+    <div class="ct"><span class="sn">2</span>Dimensioni modulo singolo</div>
+    <div class="f"><label>Larghezza (cm)</label>
+      <select id="pg-larg" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:var(--mono);width:100%;">
+        <option value="2000">2000 mm</option><option value="2500">2500 mm</option>
+        <option value="3000" selected>3000 mm</option><option value="3200">3200 mm</option>
+        <option value="3400">3400 mm</option><option value="3600">3600 mm</option>
+        <option value="3800">3800 mm</option><option value="4000">4000 mm</option>
+        <option value="4500">4500 mm</option><option value="5000">5000 mm</option>
+      </select>
+    </div>
+    <div class="f" style="margin-top:.5rem;"><label>Sporgenza/Profondità (cm)</label>
+      <select id="pg-sporg" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:var(--mono);width:100%;">
+        <option value="2000">2000 mm</option><option value="2170">2170 mm</option><option value="2340">2340 mm</option>
+        <option value="2510">2510 mm</option><option value="2680">2680 mm</option><option value="2850">2850 mm</option>
+        <option value="3020">3020 mm</option><option value="3190">3190 mm</option><option value="3360">3360 mm</option>
+        <option value="3530">3530 mm</option><option value="3700" selected>3700 mm</option><option value="3870">3870 mm</option>
+        <option value="4040">4040 mm</option><option value="4210">4210 mm</option><option value="4380">4380 mm</option>
+        <option value="4550">4550 mm</option><option value="4720">4720 mm</option><option value="4890">4890 mm</option>
+        <option value="5060">5060 mm</option><option value="5230">5230 mm</option><option value="5400">5400 mm</option>
+        <option value="5570">5570 mm</option><option value="5740">5740 mm</option><option value="5910">5910 mm</option>
+        <option value="6080">6080 mm</option>
+      </select>
+    </div>
+    <div id="pg-dim-totali" style="margin-top:.6rem;padding:6px 10px;background:var(--surf2);border-radius:var(--r);font-family:var(--mono);font-size:12px;color:var(--muted);"></div>
+  </div>
+</div>
+
+<div class="cols2">
+  <!-- ALTEZZA E FINITURE -->
+  <div class="card">
+    <div class="ct"><span class="sn">3</span>Altezza e finiture</div>
+    <div class="f"><label>Altezza piantoni</label>
+      <select id="pg-h" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:var(--mono);width:100%;">
+        <option value="2400" selected>Standard 2400 mm (incluso)</option>
+        <option value="2500">2500 mm (+€180/piantone)</option>
+        <option value="2600">2600 mm (+€180/piantone)</option>
+        <option value="2700">2700 mm (+€180/piantone)</option>
+        <option value="2800">2800 mm (+€180/piantone)</option>
+        <option value="2900">2900 mm (+€180/piantone)</option>
+        <option value="3000">3000 mm (+€180/piantone)</option>
+      </select>
+    </div>
+    <div class="ir" style="margin-top:.5rem;">
+      <div class="f"><label>Colore verniciatura</label>
+        <select id="pg-colore" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
+          <option value="std">Standard (incluso)</option>
+          <option value="spec">Colore speciale RAL (+10%)</option>
+        </select>
+      </div>
+      <div class="f"><label>Coibentazione lame</label>
+        <select id="pg-coib" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
+          <option value="no">No</option>
+          <option value="si">Sì — polistirolo (+4%)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPIANTO LED -->
+  <div class="card">
+    <div class="ct"><span class="sn">4</span>Impianto LED</div>
+    <div class="f"><label>LED Perimetrali</label>
+      <select id="pg-led-peri" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
+        <option value="no">Nessuno</option>
+        <option value="bianco">Bianco dimmerabile</option>
+        <option value="rgb">RGB dimmerabile</option>
+      </select>
+    </div>
+    <div class="f" style="margin-top:.5rem;"><label>Spot LED lame</label>
+      <select id="pg-led-spot" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
+        <option value="no">Nessuno</option>
+        <option value="std">Standard (≤ 330 cm larghezza)</option>
+        <option value="plus">Plus (> 330 cm larghezza)</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- ACCESSORI -->
+<div class="card">
+  <div class="ct"><span class="sn">5</span>Accessori aggiuntivi</div>
+  <div class="opt-g" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.5rem;">
+    <label class="opt-check" style="display:flex;align-items:center;gap:.4rem;cursor:pointer;padding:6px 10px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;">
+      <input type="checkbox" id="pg-acc-radio" onchange="calcPergola()"> Radiocomando aggiuntivo (€90)
+    </label>
+    <label class="opt-check" style="display:flex;align-items:center;gap:.4rem;cursor:pointer;padding:6px 10px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;">
+      <input type="checkbox" id="pg-acc-motore" onchange="calcPergola()"> Motore aggiuntivo (€420)
+    </label>
+    <label class="opt-check" style="display:flex;align-items:center;gap:.4rem;cursor:pointer;padding:6px 10px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;">
+      <input type="checkbox" id="pg-acc-gateway" onchange="calcPergola()"> Gateway smart (€550)
+    </label>
+    <div style="display:flex;align-items:center;gap:.4rem;padding:6px 10px;border:1px solid var(--bdr);border-radius:var(--r);">
+      <span style="font-size:12px;white-space:nowrap;">Piantoni extra:</span>
+      <input type="number" id="pg-acc-piantoni" value="0" min="0" max="10" step="1" onchange="calcPergola()"
+        style="width:50px;padding:3px 6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;font-family:var(--mono);">
+      <span style="font-size:11px;color:var(--muted);">× €480</span>
+    </div>
+  </div>
+</div>
+
+<!-- RIEPILOGO PERGOLA -->
+<div class="card" id="pg-result" style="background:var(--surf2);">
+  <div style="color:var(--muted);font-size:12px;font-family:var(--mono);">Configura la pergola per vedere il preventivo</div>
+</div>
+
+<!-- PULSANTE AGGIUNGI -->
+<div style="display:flex;gap:.5rem;margin-top:.25rem;">
+  <button class="add-btn" onclick="salvaPergola()" style="flex:1;">
+    + Aggiungi al preventivo
+  </button>
+</div>
+
+</div><!-- /pan-perg -->
+
 <!-- CONDIZIONI DI PAGAMENTO -->
 <div class="card" id="card-pagamento" style="border-left:3px solid #1a6b5a;">
   <div class="ct">💳 Condizioni di pagamento</div>
@@ -2156,7 +2310,7 @@ intestazione+=d.outerHTML;
 const lista=listaCarica();
 const sconto=+document.getElementById('sconto').value/100;
 const ivaRate=+document.getElementById('iva-sel').value;
-const tipoLbl={vetrata:'Vetrata',fisso:'\x54\x65\x6c\x61\x69\x6f\x20\x66\x69\x73\x73\x6f',timpano:'Timpano',profilo:'Profilo',multi:'\x56\x65\x74\x72\x61\x74\x61\x20\x4c\x2f\x43'};
+const tipoLbl={vetrata:'Vetrata',fisso:'\x54\x65\x6c\x61\x69\x6f\x20\x66\x69\x73\x73\x6f',timpano:'Timpano',profilo:'Profilo',multi:'\x56\x65\x74\x72\x61\x74\x61\x20\x4c\x2f\x43',pergola:'\x50\x65\x72\x67\x6f\x6c\x61\x20\x4b\x59\x52\x49\x41'};
 lista.forEach(function(e){
 if(e.S&&e.S.Lt){ e.voci=calcolaVoci(e.S); e.subtot=+e.voci.filter(function(v){return !v.noPrice;}).reduce(function(s,v){return s+v.tot;},0).toFixed(2); }
 });
@@ -2916,6 +3070,194 @@ var totaleCalc = +(totSubtot * (1 - scontoCalc) * (1 + ivaRate)).toFixed(2);
 document.getElementById('\x73\x63\x6f\x6e\x74\x6f\x2d\x63\x61\x6c\x63\x6f\x6c\x61\x74\x6f').textContent =
 '→ ' + (tipo||'\x6e\x65\x73\x73\x75\x6e\x61\x20\x76\x61\x72\x69\x61\x7a\x69\x6f\x6e\x65') + '\x20\u00b7\x20\x74\x6f\x74\x61\x6c\x65\x20\u20ac\x20' + totaleCalc.toFixed(2).replace('.',',');
 renderPrev();
+}
+const PG_L = [2000,2500,3000,3200,3400,3600,3800,4000,4500,5000]; 
+const PG_S = [2000,2170,2340,2510,2680,2850,3020,3190,3360,3530,3700,3870,4040,4210,4380,4550,4720,4890,5060,5230,5400,5570,5740,5910,6080]; 
+const PG_SIN = [
+[6460,6860,7260,7660,8060,8460,8860,9260,11760,12610],
+[6770,7170,7570,7970,8370,8770,9170,9570,12150,12970],
+[7090,7490,7890,8290,8690,9090,9490,9890,12530,13330],
+[7410,7810,8210,8610,9010,9410,9810,10210,12910,13690],
+[7730,8130,8530,8930,9330,9730,10130,10530,13300,14060],
+[8060,8460,8860,9260,9660,10060,10460,10860,13690,14410],
+[8380,8780,9780,10180,10580,10980,11380,11780,14070,14770],
+[8690,9090,10130,10530,10930,11330,11730,12130,14460,15170],
+[9000,9490,10460,10860,11260,11660,12060,12460,14810,15560],
+[9330,9730,10810,11210,11610,12010,12410,12810,15220,15960],
+[9660,10060,11160,11560,11960,12360,12760,13160,15590,16350],
+[9980,10380,11500,11900,12300,12700,13100,13500,15990,16730],
+[10280,10680,11830,12230,12630,13030,13430,13830,16360,17120],
+[10610,11010,12170,12570,12970,13370,13770,14170,16720,17510],
+[10930,11330,12520,12920,13320,13720,14120,14520,17120,17900],
+[11260,11670,12870,13270,13670,14070,14470,14870,17510,18290],
+[11580,11980,13210,13610,14010,14410,14810,15210,17890,18680],
+[11890,12290,13560,13960,14360,14760,15160,15560,18260,19070],
+[12230,12630,13900,14300,14700,15100,15500,15900,18860,19460],
+[12550,12950,14250,14650,15050,15450,15850,16250,19050,19860],
+[12860,13260,14580,14980,15380,15780,16180,16580,19420,20250],
+[13180,13580,14930,15330,15730,16130,16530,16930,19810,20630],
+[13510,13910,15270,15670,16070,16470,16870,17270,20180,21020],
+[13820,14220,15610,16010,16410,16810,17210,17610,20580,21410],
+[14160,14560,15960,16360,16760,17160,17560,17960,20960,21800]
+];
+const PG_ACC = [
+[5660,6060,6380,6780,7180,7580,7980,8380,10820,11730],
+[5970,6370,6690,7090,7490,7890,8290,8690,11200,12090],
+[6290,6690,7010,7410,7810,8210,8610,9020,11590,12460],
+[6610,7010,7330,7730,8130,8530,8930,9330,11970,12810],
+[6930,7330,7660,8060,8460,8860,9260,9660,12360,13170],
+[7260,7660,7970,8370,8780,9170,9570,9970,12750,13530],
+[7580,7980,8900,9300,9700,10100,10500,10900,13130,13890],
+[7890,8290,9250,9650,10060,10460,10860,11260,13510,14290],
+[8200,8690,9570,9970,10370,10770,11170,11570,13870,14680],
+[8530,8930,9930,10330,10730,11130,11530,11930,14270,15070],
+[8860,9260,10270,10670,11070,11470,11870,12270,14660,15460],
+[9180,9580,10620,11020,11420,11820,12220,12620,15050,15860],
+[9480,9890,10960,11360,11760,12160,12560,12960,15470,16250],
+[9810,10210,11290,11690,12090,12490,12890,13290,15850,16630],
+[10130,10530,11650,12050,12450,12850,13250,13650,16250,17020],
+[10460,10860,11990,12390,12790,13190,13590,13990,16630,17410],
+[10780,11180,12330,12730,13130,13530,13930,14330,17010,17800],
+[11090,11490,12670,13070,13470,13870,14270,14670,17380,18190],
+[11430,11830,13020,13420,13820,14220,14620,15020,17780,18580],
+[11750,12150,13360,13760,14160,14560,14960,15360,18160,18910],
+[12060,12460,13700,14100,14500,14900,15300,15700,18550,19360],
+[12380,12780,14060,14460,14860,15260,15660,16060,18930,19750],
+[12710,13110,14390,14790,15190,15590,15990,16390,19300,20150],
+[13020,13420,14730,15130,15530,15930,16330,16730,19700,20530],
+[13360,13760,15080,15480,15880,16280,16680,17080,20070,20920]
+];
+const PG_LED_P = [
+{max:10,b:1010,rgb:1440},{max:12,b:1100,rgb:1580},{max:14,b:1180,rgb:1690},
+{max:16,b:1270,rgb:1810},{max:18,b:1400,rgb:2000},{max:20,b:1560,rgb:2110},{max:22,b:1710,rgb:2330}
+];
+const PG_SPOT = [
+{pMin:3020,pMax:3700,p330:1000,p500:1500},{pMin:3870,pMax:4890,p330:1330,p500:2000},
+{pMin:5060,pMax:6080,p330:1670,p500:2330}
+]; 
+var _pgTipo = 'sin';
+function setPergTipo(t){
+_pgTipo = t;
+document.getElementById('\x70\x67\x2d\x74\x69\x70\x6f\x2d\x73\x69\x6e').classList.toggle('on', t==='sin');
+document.getElementById('\x70\x67\x2d\x74\x69\x70\x6f\x2d\x61\x63\x63').classList.toggle('on', t==='acc');
+document.getElementById('\x70\x67\x2d\x61\x63\x63\x2d\x6f\x70\x74\x73').style.display = t==='acc' ? '' : 'none';
+calcPergola();
+}
+function getPgPrezzo(sIdx, lIdx, tipo){
+var m = tipo==='acc' ? PG_ACC : PG_SIN;
+return (m[sIdx] && m[sIdx][lIdx]) ? m[sIdx][lIdx] : 0;
+}
+function calcPergola(){
+var larg = +document.getElementById('pg-larg').value;
+var sporg = +document.getElementById('pg-sporg').value;
+var appl = document.getElementById('pg-appl').value;
+var nL = _pgTipo==='acc' ? +document.getElementById('\x70\x67\x2d\x6e\x2d\x6c\x61\x72\x67').value : 1;
+var nP = _pgTipo==='acc' ? +document.getElementById('\x70\x67\x2d\x6e\x2d\x70\x72\x6f\x66').value : 1;
+var h = +document.getElementById('pg-h').value;
+var colore = document.getElementById('\x70\x67\x2d\x63\x6f\x6c\x6f\x72\x65').value;
+var coib = document.getElementById('pg-coib').value;
+var ledPeri = document.getElementById('\x70\x67\x2d\x6c\x65\x64\x2d\x70\x65\x72\x69').value;
+var ledSpot = document.getElementById('\x70\x67\x2d\x6c\x65\x64\x2d\x73\x70\x6f\x74').value;
+var accRadio = document.getElementById('\x70\x67\x2d\x61\x63\x63\x2d\x72\x61\x64\x69\x6f').checked;
+var accMotore = document.getElementById('\x70\x67\x2d\x61\x63\x63\x2d\x6d\x6f\x74\x6f\x72\x65').checked;
+var accGateway = document.getElementById('\x70\x67\x2d\x61\x63\x63\x2d\x67\x61\x74\x65\x77\x61\x79').checked;
+var accPiant = +document.getElementById('\x70\x67\x2d\x61\x63\x63\x2d\x70\x69\x61\x6e\x74\x6f\x6e\x69').value || 0;
+var lIdx = PG_L.indexOf(larg);
+var sIdx = PG_S.indexOf(sporg);
+if(lIdx<0||sIdx<0) return;
+var nModuli = nL * nP;
+var prezzoMod = getPgPrezzo(sIdx, lIdx, _pgTipo==='acc' ? 'acc' : 'sin');
+var prezzoBase = prezzoMod * nModuli;
+var piantoni = (nL+1) * (nP+1);
+var piantoniMancanti = (appl==='auto') ? 0 : 2;
+var piantoniEff = piantoni - piantoniMancanti;
+var scontoParete = piantoniMancanti * 270;
+var suppH = h > 2400 ? 180 * piantoniEff : 0;
+var suppColore = colore==='spec' ? prezzoBase * 0.10 : 0;
+var suppCoib = coib==='si' ? prezzoBase * 0.04 : 0;
+var prezzoStruttura = prezzoBase - scontoParete + suppH + suppColore + suppCoib;
+var largTot = nL * larg - 80 * (nL-1); 
+var sporgTot = nP * sporg - 80 * (nP-1); 
+var perimMetri = 2 * (largTot + sporgTot) / 1000; 
+var dimBox = document.getElementById('\x70\x67\x2d\x64\x69\x6d\x2d\x74\x6f\x74\x61\x6c\x69');
+if(dimBox){
+var dimStr = nModuli > 1
+? 'Totale: ' + largTot + ' × ' + sporgTot + ' mm (' + nModuli + ' moduli)'
+: largTot + ' × ' + sporgTot + ' mm';
+dimStr += '\x20\u00b7\x20\x50\x65\x72\x69\x6d\x65\x74\x72\x6f\x3a\x20' + perimMetri.toFixed(1) + '\x20\x6d\x20\u00b7\x20\x50\x69\x61\x6e\x74\x6f\x6e\x69\x3a\x20' + piantoniEff;
+dimBox.textContent = dimStr;
+}
+var costoLedPeri = 0, costoAlimPeri = 0;
+if(ledPeri !== 'no'){
+var fascePeri = PG_LED_P.filter(function(f){ return perimMetri <= f.max; });
+var fascePeriSel = fascePeri.length ? fascePeri[0] : PG_LED_P[PG_LED_P.length-1];
+costoLedPeri = ledPeri==='rgb' ? fascePeriSel.rgb : fascePeriSel.b;
+costoAlimPeri = perimMetri <= 16 ? 400 : 530;
+}
+var costoSpot = 0, costoAlimSpot = 0;
+if(ledSpot !== 'no'){
+var fasciaSpot = PG_SPOT.find(function(f){ return sporg >= f.pMin && sporg <= f.pMax; });
+if(fasciaSpot){
+costoSpot = ledSpot==='std' ? fasciaSpot.p330 : fasciaSpot.p500;
+var faretti = ledSpot==='std' ? (fasciaSpot.p330===1000?12:fasciaSpot.p330===1330?16:20) : (fasciaSpot.p500===1500?18:fasciaSpot.p500===2000?24:30);
+costoAlimSpot = faretti <= 20 ? 400 : 530;
+}
+}
+var costoAcc = (accRadio?90:0) + (accMotore?420:0) + (accGateway?550:0) + accPiant*480;
+var totale = prezzoStruttura + costoLedPeri + costoAlimPeri + costoSpot + costoAlimSpot + costoAcc;
+var voci = [];
+voci.push({label:'\x53\x74\x72\x75\x74\x74\x75\x72\x61\x20\x4b\x59\x52\x49\x41\x20'+_pgTipo.toUpperCase()+' '+larg+'×'+sporg+' cm'+(nModuli>1?' × '+nModuli+' moduli':''), val:prezzoBase});
+if(scontoParete>0) voci.push({label:'\x44\x65\x74\x72\x61\x7a\x69\x6f\x6e\x65\x20\x70\x69\x61\x6e\x74\x6f\x6e\x69\x20\x6d\x61\x6e\x63\x61\x6e\x74\x69\x20\x28'+piantoniMancanti+' × €270)', val:-scontoParete});
+if(suppH>0) voci.push({label:'\x53\x75\x70\x70\x6c\x65\x6d\x65\x6e\x74\x6f\x20\x48\x20'+h+' cm ('+piantoniEff+'\x20\x70\x69\x61\x6e\x74\x6f\x6e\x69\x20\u00d7\x20\u20ac\x31\x38\x30\x29', val:suppH});
+if(suppColore>0) voci.push({label:'\x53\x75\x70\x70\x6c\x65\x6d\x65\x6e\x74\x6f\x20\x63\x6f\x6c\x6f\x72\x65\x20\x73\x70\x65\x63\x69\x61\x6c\x65\x20\x28\x2b\x31\x30\x25\x29', val:suppColore});
+if(suppCoib>0) voci.push({label:'\x43\x6f\x69\x62\x65\x6e\x74\x61\x7a\x69\x6f\x6e\x65\x20\x6c\x61\x6d\x65\x6c\x6c\x65\x20\x70\x6f\x6c\x69\x73\x74\x69\x72\x6f\x6c\x6f\x20\x28\x2b\x34\x25\x29', val:suppCoib});
+if(costoLedPeri>0) voci.push({label:'\x4c\x45\x44\x20\x50\x65\x72\x69\x6d\x65\x74\x72\x61\x6c\x69\x20'+ledPeri.toUpperCase()+' (≤'+perimMetri.toFixed(0)+'m)', val:costoLedPeri});
+if(costoAlimPeri>0) voci.push({label:'\x41\x6c\x69\x6d\x65\x6e\x74\x61\x74\x6f\x72\x65\x20\x4c\x45\x44\x20\x70\x65\x72\x69\x6d\x65\x74\x72\x61\x6c\x69', val:costoAlimPeri});
+if(costoSpot>0) voci.push({label:'\x53\x70\x6f\x74\x20\x4c\x45\x44\x20\x6c\x61\x6d\x65\x20\x28'+(ledSpot==='std'?'≤330':'\>330')+'\x20\x63\x6d\x20\x6c\x61\x72\x67\x68\x2e\x29', val:costoSpot});
+if(costoAlimSpot>0) voci.push({label:'\x41\x6c\x69\x6d\x65\x6e\x74\x61\x74\x6f\x72\x65\x20\x73\x70\x6f\x74\x20\x4c\x45\x44', val:costoAlimSpot});
+if(accRadio) voci.push({label:'\x52\x61\x64\x69\x6f\x63\x6f\x6d\x61\x6e\x64\x6f\x20\x61\x67\x67\x69\x75\x6e\x74\x69\x76\x6f', val:90});
+if(accMotore) voci.push({label:'\x4d\x6f\x74\x6f\x72\x65\x20\x61\x67\x67\x69\x75\x6e\x74\x69\x76\x6f', val:420});
+if(accGateway) voci.push({label:'\x47\x61\x74\x65\x77\x61\x79\x20\x73\x6d\x61\x72\x74', val:550});
+if(accPiant>0) voci.push({label:'\x50\x69\x61\x6e\x74\x6f\x6e\x69\x20\x65\x78\x74\x72\x61\x20\u00d7'+accPiant, val:accPiant*480});
+var fmt2 = function(v){ return v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+var html = '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x6f\x6e\x6f\x29\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x32\x70\x78\x3b\x22\x3e';
+html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x37\x30\x30\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x33\x70\x78\x3b\x6d\x61\x72\x67\x69\x6e\x2d\x62\x6f\x74\x74\x6f\x6d\x3a\x2e\x35\x72\x65\x6d\x3b\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6f\x6b\x29\x3b\x22\x3e\u1f33f\x20\x50\x65\x72\x67\x6f\x6c\x61\x20\x4b\x59\x52\x49\x41\x20\u2014\x20'+largTot+' × '+sporgTot+'\x20\x6d\x6d\x3c\x2f\x64\x69\x76\x3e';
+voci.forEach(function(v){
+var col = v.val < 0 ? '\x63\x6f\x6c\x6f\x72\x3a\x23\x31\x61\x36\x62\x35\x61\x3b' : '';
+html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x33\x70\x78\x20\x30\x3b\x62\x6f\x72\x64\x65\x72\x2d\x62\x6f\x74\x74\x6f\x6d\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x76\x61\x72\x28\x2d\x2d\x62\x64\x72\x2d\x6c\x74\x29\x3b'+col+'">'
++'<span>'+v.label+'</span>'
++'\x3c\x73\x70\x61\x6e\x20\x73\x74\x79\x6c\x65\x3d\x22\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b\x22\x3e'+(v.val<0?'− ':'')+'€ '+fmt2(Math.abs(v.val))+'</span>'
++'</div>';
+});
+html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x38\x70\x78\x20\x30\x20\x34\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x35\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x37\x30\x30\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x31\x61\x31\x61\x31\x61\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x32\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x33\x33\x33\x3b\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x34\x70\x78\x3b\x22\x3e'
++'\x3c\x73\x70\x61\x6e\x3e\x54\x4f\x54\x41\x4c\x45\x20\x49\x56\x41\x20\x45\x53\x43\x4c\x55\x53\x41\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x73\x70\x61\x6e\x3e\u20ac\x20'+fmt2(totale)+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e';
+html += '</div>';
+var box = document.getElementById('\x70\x67\x2d\x72\x65\x73\x75\x6c\x74');
+if(box) box.innerHTML = html;
+window._pgState = {larg,sporg,largTot,sporgTot,nL,nP,nModuli,tipo:_pgTipo,appl,h,colore,coib,
+ledPeri,ledSpot,accRadio,accMotore,accGateway,accPiant,
+piantoniEff,totale,voci,prezzoStruttura};
+}
+function salvaPergola(){
+if(!window._pgState){calcPergola();}
+var s = window._pgState;
+if(!s||!s.totale) return;
+var fmt2 = function(v){ return v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); };
+var applLbl = s.appl==='auto'?'\x41\x75\x74\x6f\x70\x6f\x72\x74\x61\x6e\x74\x65':s.appl==='1lato'?'\x41\x64\x64\x6f\x73\x73\x61\x74\x61\x20\x31\x20\x6c\x61\x74\x6f':'\x41\x64\x64\x6f\x73\x73\x61\x74\x61\x20\x61\x6e\x67\x6f\x6c\x6f';
+var nome = '\x50\x65\x72\x67\x6f\x6c\x61\x20\x4b\x59\x52\x49\x41\x20'+s.tipo.toUpperCase()+' '+s.largTot+'×'+s.sporgTot+' mm';
+var desc = applLbl+'\x20\u00b7\x20\x48\x20\x70\x69\x61\x6e\x74\x6f\x6e\x69\x3a\x20'+s.h+'\x20\x63\x6d\x20\u00b7\x20\x50\x69\x61\x6e\x74\x6f\x6e\x69\x3a\x20'+s.piantoniEff;
+if(s.ledPeri!=='no') desc += ' · LED '+s.ledPeri;
+if(s.ledSpot!=='no') desc += '\x20\u00b7\x20\x53\x70\x6f\x74\x20\x4c\x45\x44';
+var voci = s.voci.map(function(v){ return {desc:v.label, q:1, um:'corpo', pu:fmt2(Math.abs(v.val)), tot:v.val, noPrice:false}; });
+var lista = listaCarica();
+lista.push({
+id:'pg'+Date.now(), tipo:'pergola', nome:nome, desc:desc,
+dati:{...s}, voci:voci, subtot:+s.totale.toFixed(2)
+});
+listaSalva(lista);
+renderLista();
+renderPrev();
+goTab('prev');
 }
 function modificaMulti(id){
 const lista = listaCarica();
