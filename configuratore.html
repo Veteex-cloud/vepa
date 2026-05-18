@@ -1047,7 +1047,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
         <span id="sconto-calcolato" style="font-size:11px;color:var(--muted);font-family:var(--mono);"></span>
       </div>
     </div>
-    <div class="f"><label>Aliquota IVA</label>
+    <div class="f"><label>Aliquota IVA vetrate</label>
       <select id="iva-sel" onchange="renderPrev()">
         <option value="0.10" selected>10% — Manutenzione straordinaria</option>
         <option value="0.22">22% — Standard</option>
@@ -1056,6 +1056,37 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 
 
   </div><!-- /ir -->
+
+  <div style="border-top:1px solid var(--bdr-lt);margin-top:.5rem;padding-top:.75rem;">
+    <div style="font-size:11px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.5rem;">🌿 Pergole Bioclimatiche</div>
+    <div class="ir">
+      <div class="f"><label id="lbl-sconto-pg">Sconto / Ricarico %</label>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <button type="button" onclick="stepScontoPg(-0.5)" style="width:32px;height:32px;border:1px solid var(--bdr);border-radius:var(--r);background:var(--surf2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">−</button>
+          <input type="number" id="sconto-pg" min="-20" max="40" value="0" step="0.5"
+            style="width:80px;padding:6px 8px;border:1px solid var(--bdr);border-radius:var(--r);font-family:var(--mono);font-size:13px;text-align:center;"
+            oninput="aggiornaScontoPg(this.value)">
+          <button type="button" onclick="stepScontoPg(0.5)" style="width:32px;height:32px;border:1px solid var(--bdr);border-radius:var(--r);background:var(--surf2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">+</button>
+          <span id="sc-pg-v" style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:80px;"></span>
+        </div>
+      </div>
+      <div class="f"><label>Aliquota IVA pergole</label>
+        <select id="iva-sel-pg" onchange="renderPrev()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
+          <option value="0.10" selected>10% — Manutenzione straordinaria</option>
+          <option value="0.22">22% — Standard</option>
+        </select>
+      </div>
+    </div>
+    <div class="f"><label>Prezzo obiettivo pergole (IVA incl.)</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:var(--mono);font-size:13px;">€</span>
+        <input type="number" id="prezzo-obiettivo-pg" min="0" step="10" placeholder="Es. 8.500"
+          style="width:130px;padding:6px 8px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:var(--mono);"
+          oninput="calcolaScontoPg(this.value)">
+        <span id="sconto-calcolato-pg" style="font-size:11px;color:var(--muted);font-family:var(--mono);"></span>
+      </div>
+    </div>
+  </div>
 </div>
 
 </div><!-- /pan-prev -->
@@ -1216,34 +1247,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
         style="width:50px;padding:3px 6px;border:1px solid var(--bdr);border-radius:var(--r);font-size:12px;font-family:var(--mono);">
       <span style="font-size:11px;color:var(--muted);">× €480</span>
     </div>
-  </div>
-</div>
-
-<!-- SCONTO PERGOLA -->
-<div class="card" style="border-left:3px solid #b35c00;">
-  <div class="ct">Sconto / Ricarico pergola</div>
-  <div class="ir">
-    <div class="f"><label id="lbl-sconto-pg">Sconto / Ricarico %</label>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <button class="vi-btn" onclick="stepScontoPg(-1)" style="padding:4px 10px;font-size:16px;line-height:1;">−</button>
-        <input type="range" id="sconto-pg" min="-20" max="40" step="0.1" value="0"
-          oninput="aggiornaScontoPg(this.value)" style="flex:1;">
-        <button class="vi-btn" onclick="stepScontoPg(1)" style="padding:4px 10px;font-size:16px;line-height:1;">+</button>
-      </div>
-      <div id="sc-pg-v" style="font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:2px;">0%</div>
-    </div>
-    <div class="f"><label>Prezzo obiettivo (IVA inclusa)</label>
-      <input type="number" id="prezzo-obiettivo-pg" placeholder="Es. 8.500"
-        style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;font-family:var(--mono);width:100%;"
-        oninput="calcolaScontoPg(this.value)">
-      <div id="sconto-calcolato-pg" style="font-size:11px;font-family:var(--mono);color:var(--accent);margin-top:3px;min-height:16px;"></div>
-    </div>
-  </div>
-  <div class="f" style="margin-top:.5rem;"><label>Aliquota IVA pergola</label>
-    <select id="iva-sel-pg" onchange="calcPergola()" style="padding:7px 9px;border:1px solid var(--bdr);border-radius:var(--r);font-size:13px;width:100%;">
-      <option value="0.22" selected>22% — Standard</option>
-      <option value="0.10">10% — Manutenzione straordinaria</option>
-    </select>
   </div>
 </div>
 
@@ -2378,7 +2381,7 @@ intestazione+=d.outerHTML;
 const lista=listaCarica();
 const sconto=+document.getElementById('sconto').value/100;
 const ivaRate=+document.getElementById('iva-sel').value;
-const tipoLbl={vetrata:'Vetrata',fisso:'\x54\x65\x6c\x61\x69\x6f\x20\x66\x69\x73\x73\x6f',timpano:'Timpano',profilo:'Profilo',multi:'\x56\x65\x74\x72\x61\x74\x61\x20\x4c\x2f\x43',pergola:'\x50\x65\x72\x67\x6f\x6c\x61\x20\x4b\x59\x52\x49\x41'};
+const tipoLbl={vetrata:'Vetrata',fisso:'\x54\x65\x6c\x61\x69\x6f\x20\x66\x69\x73\x73\x6f',timpano:'Timpano',profilo:'Profilo',multi:'\x56\x65\x74\x72\x61\x74\x61\x20\x4c\x2f\x43',pergola:'\x50\x65\x72\x67\x6f\x6c\x61\x20\x42\x69\x6f\x63\x6c\x69\x6d\x61\x74\x69\x63\x61'};
 lista.forEach(function(e){
 if(e.S&&e.S.Lt){ e.voci=calcolaVoci(e.S); e.subtot=+e.voci.filter(function(v){return !v.noPrice;}).reduce(function(s,v){return s+v.tot;},0).toFixed(2); }
 });
@@ -3344,13 +3347,10 @@ costoAlimSpot = faretti<=20 ? 400 : 530;
 }
 var costoAcc = (accRadio?90:0)+(accMotore?420:0)+(accGateway?550:0)+accPiant*480;
 var totale = prezzoStruttura + costoLedPeri + costoAlimPeri + costoSpot + costoAlimSpot + costoAcc;
-var scontoPg = +(document.getElementById('\x73\x63\x6f\x6e\x74\x6f\x2d\x70\x67')||{value:0}).value/100 || 0;
-var ivaPg = +(document.getElementById('\x69\x76\x61\x2d\x73\x65\x6c\x2d\x70\x67')||{value:'0.22'}).value || 0.22;
-var totaleScont = +(totale*(1-scontoPg)).toFixed(2);
-var totaleIva = +(totaleScont*(1+ivaPg)).toFixed(2);
+var scontoPg = 0; var ivaPg = 0.10; var totaleScont = totale; var totaleIva = totale;
 var voci = [];
 var fmt2 = function(v){ return v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); };
-voci.push({label:'\x53\x74\x72\x75\x74\x74\x75\x72\x61\x20\x4b\x59\x52\x49\x41\x20'+(_pgTipo==='acc'?'\x41\x43\x43\x4f\x50\x50\x49\x41\x54\x41':'SINGOLA')+' '+larg+'×'+sporg+' mm'+(nModuli>1?' × '+nModuli+' moduli':''), val:prezzoBase});
+voci.push({label:'\x53\x74\x72\x75\x74\x74\x75\x72\x61\x20\x42\x69\x6f\x63\x6c\x69\x6d\x61\x74\x69\x63\x61\x20'+(_pgTipo==='acc'?'\x41\x43\x43\x4f\x50\x50\x49\x41\x54\x41':'SINGOLA')+' '+larg+'×'+sporg+' mm'+(nModuli>1?' × '+nModuli+' moduli':''), val:prezzoBase});
 if(scontoParete>0) voci.push({label:'\x44\x65\x74\x72\x61\x7a\x69\x6f\x6e\x65\x20\x70\x69\x61\x6e\x74\x6f\x6e\x69\x20\x6d\x61\x6e\x63\x61\x6e\x74\x69\x20\x28'+piantoniMancanti+' × €270)', val:-scontoParete});
 if(suppH>0) voci.push({label:'\x53\x75\x70\x70\x6c\x65\x6d\x65\x6e\x74\x6f\x20\x48\x20'+h+' mm ('+piantoniEff+'\x20\x70\x69\x61\x6e\x74\x6f\x6e\x69\x20\u00d7\x20\u20ac\x31\x38\x30\x29', val:suppH});
 if(suppColore>0) voci.push({label:'\x53\x75\x70\x70\x6c\x65\x6d\x65\x6e\x74\x6f\x20\x63\x6f\x6c\x6f\x72\x65\x20\x73\x70\x65\x63\x69\x61\x6c\x65\x20\x28\x2b\x31\x30\x25\x29', val:suppColore});
@@ -3375,13 +3375,9 @@ var col = v.val<0?'\x63\x6f\x6c\x6f\x72\x3a\x23\x31\x61\x36\x62\x35\x61\x3b':'';
 html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x33\x70\x78\x20\x30\x3b\x62\x6f\x72\x64\x65\x72\x2d\x62\x6f\x74\x74\x6f\x6d\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x76\x61\x72\x28\x2d\x2d\x62\x64\x72\x2d\x6c\x74\x29\x3b'+col+'">'
 +'<span>'+v.label+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x73\x70\x61\x6e\x20\x73\x74\x79\x6c\x65\x3d\x22\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b\x22\x3e'+(v.val<0?'− ':'')+'€ '+fmt2(Math.abs(v.val))+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e';
 });
-if(scontoPg!==0) html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x33\x70\x78\x20\x30\x3b\x62\x6f\x72\x64\x65\x72\x2d\x62\x6f\x74\x74\x6f\x6d\x3a\x31\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x76\x61\x72\x28\x2d\x2d\x62\x64\x72\x2d\x6c\x74\x29\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x31\x61\x36\x62\x35\x61\x3b\x22\x3e'
-+'<span>'+(scontoPg>0?'Sconto':'Ricarico')+' '+Math.abs(scontoPg*100).toFixed(1)+'%</span>'
-+'\x3c\x73\x70\x61\x6e\x20\x73\x74\x79\x6c\x65\x3d\x22\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b\x22\x3e'+(scontoPg>0?'− ':'+ ')+'€ '+fmt2(Math.abs(totale*scontoPg))+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e';
-html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x34\x70\x78\x20\x30\x20\x32\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x35\x35\x35\x3b\x22\x3e\x3c\x73\x70\x61\x6e\x3e\x49\x6d\x70\x6f\x6e\x69\x62\x69\x6c\x65\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x73\x70\x61\x6e\x3e\u20ac\x20'+fmt2(totaleScont)+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e';
-html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x32\x70\x78\x20\x30\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x32\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x38\x38\x38\x3b\x22\x3e\x3c\x73\x70\x61\x6e\x3e\x49\x56\x41\x20'+Math.round(ivaPg*100)+'\x25\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x73\x70\x61\x6e\x3e\u20ac\x20'+fmt2(totaleScont*ivaPg)+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e';
-html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x38\x70\x78\x20\x30\x20\x34\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x35\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x37\x30\x30\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x31\x61\x31\x61\x31\x61\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x32\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x33\x33\x33\x3b\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x34\x70\x78\x3b\x22\x3e'
-+'\x3c\x73\x70\x61\x6e\x3e\x54\x4f\x54\x41\x4c\x45\x20\x49\x56\x41\x20\x49\x4e\x43\x4c\x55\x53\x41\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x73\x70\x61\x6e\x3e\u20ac\x20'+fmt2(totaleIva)+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e';
+html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x64\x69\x73\x70\x6c\x61\x79\x3a\x66\x6c\x65\x78\x3b\x6a\x75\x73\x74\x69\x66\x79\x2d\x63\x6f\x6e\x74\x65\x6e\x74\x3a\x73\x70\x61\x63\x65\x2d\x62\x65\x74\x77\x65\x65\x6e\x3b\x70\x61\x64\x64\x69\x6e\x67\x3a\x38\x70\x78\x20\x30\x20\x34\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x34\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x37\x30\x30\x3b\x63\x6f\x6c\x6f\x72\x3a\x23\x31\x61\x31\x61\x31\x61\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x32\x70\x78\x20\x73\x6f\x6c\x69\x64\x20\x23\x33\x33\x33\x3b\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x34\x70\x78\x3b\x22\x3e'
++'\x3c\x73\x70\x61\x6e\x3e\x54\x4f\x54\x41\x4c\x45\x20\x4c\x4f\x52\x44\x4f\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x73\x70\x61\x6e\x3e\u20ac\x20'+fmt2(totale)+'\x3c\x2f\x73\x70\x61\x6e\x3e\x3c\x2f\x64\x69\x76\x3e';
+html += '\x3c\x64\x69\x76\x20\x73\x74\x79\x6c\x65\x3d\x22\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x30\x70\x78\x3b\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x75\x74\x65\x64\x29\x3b\x66\x6f\x6e\x74\x2d\x66\x61\x6d\x69\x6c\x79\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x6f\x6e\x6f\x29\x3b\x6d\x61\x72\x67\x69\x6e\x2d\x74\x6f\x70\x3a\x32\x70\x78\x3b\x22\x3e\x53\x63\x6f\x6e\x74\x6f\x20\x65\x20\x49\x56\x41\x20\x63\x61\x6c\x63\x6f\x6c\x61\x74\x69\x20\x6e\x65\x6c\x20\x64\x6f\x63\x75\x6d\x65\x6e\x74\x6f\x20\x70\x72\x65\x76\x65\x6e\x74\x69\x76\x6f\x3c\x2f\x64\x69\x76\x3e';
 html += '</div>';
 var box = document.getElementById('\x70\x67\x2d\x72\x65\x73\x75\x6c\x74');
 if(box) box.innerHTML = html;
@@ -3400,7 +3396,7 @@ var s = window._pgState;
 if(!s||!s.totale) return;
 var fmt2 = function(v){ return v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); };
 var applLbl = s.appl==='auto'?'\x41\x75\x74\x6f\x70\x6f\x72\x74\x61\x6e\x74\x65':s.appl==='1lato'?'\x41\x64\x64\x6f\x73\x73\x61\x74\x61\x20\x31\x20\x6c\x61\x74\x6f':'\x41\x64\x64\x6f\x73\x73\x61\x74\x61\x20\x61\x6e\x67\x6f\x6c\x6f';
-var nome = '\x50\x65\x72\x67\x6f\x6c\x61\x20\x4b\x59\x52\x49\x41\x20'+s.tipo.toUpperCase()+' '+s.largTot+'×'+s.sporgTot+' mm';
+var nome = '\x50\x65\x72\x67\x6f\x6c\x61\x20\x42\x69\x6f\x63\x6c\x69\x6d\x61\x74\x69\x63\x61\x20'+s.tipo.toUpperCase()+' '+s.largTot+'×'+s.sporgTot+' mm';
 var desc = applLbl+'\x20\u00b7\x20\x48\x20\x70\x69\x61\x6e\x74\x6f\x6e\x69\x3a\x20'+s.h+'\x20\x63\x6d\x20\u00b7\x20\x50\x69\x61\x6e\x74\x6f\x6e\x69\x3a\x20'+s.piantoniEff;
 if(s.ledPeri!=='no') desc += ' · LED '+s.ledPeri;
 if(s.ledSpot!=='no') desc += '\x20\u00b7\x20\x53\x70\x6f\x74\x20\x4c\x45\x44';
@@ -3408,7 +3404,7 @@ var voci = s.voci.map(function(v){ return {desc:v.label, q:1, um:'corpo', pu:fmt
 var lista = listaCarica();
 lista.push({
 id:'pg'+Date.now(), tipo:'pergola', nome:nome, desc:desc,
-dati:{...s}, voci:voci, subtot:+s.totale.toFixed(2)
+dati:{...s}, voci:voci, subtot:+s.totale.toFixed(2), _tipo:'pergola'
 });
 listaSalva(lista);
 renderLista();
@@ -3608,11 +3604,25 @@ Subtotale: € ${fmt(e.subtot)}
 </div>
 </div>`;
 });
-const totSubtot=lista.reduce((s,e)=>s+e.subtot,0);
-const scontoEur=totSubtot*sconto;
-const imponibile=totSubtot-scontoEur;
-const ivaEur=imponibile*ivaRate;
-const totale=imponibile+ivaEur;
+const listaVetrate = lista.filter(e => e.tipo !== 'pergola');
+const listaPergole = lista.filter(e => e.tipo === 'pergola');
+const totSubtotVet = listaVetrate.reduce((s,e)=>s+e.subtot,0);
+const totSubtotPerg= listaPergole.reduce((s,e)=>s+e.subtot,0);
+const totSubtot = totSubtotVet + totSubtotPerg;
+const scontoEurVet = totSubtotVet * sconto;
+const imponibileVet= totSubtotVet - scontoEurVet;
+const ivaEurVet = imponibileVet * ivaRate;
+const totaleVet = imponibileVet + ivaEurVet;
+const scontoPgRate = +document.getElementById('\x73\x63\x6f\x6e\x74\x6f\x2d\x70\x67').value/100 || 0;
+const ivaPgRate = +document.getElementById('\x69\x76\x61\x2d\x73\x65\x6c\x2d\x70\x67').value || 0.10;
+const scontoEurPerg= totSubtotPerg * scontoPgRate;
+const imponibilePerg=totSubtotPerg - scontoEurPerg;
+const ivaEurPerg = imponibilePerg * ivaPgRate;
+const totalePerg = imponibilePerg + ivaEurPerg;
+const scontoEur = scontoEurVet + scontoEurPerg;
+const imponibile = imponibileVet + imponibilePerg;
+const ivaEur = ivaEurVet + ivaEurPerg;
+const totale = totaleVet + totalePerg;
 let mqTotali=0;
 lista.forEach(e=>{
 if(e.S&&e.S.La&&e.S.Ha&&e.S.nL){
@@ -3625,11 +3635,24 @@ mqTotali+=+e.dati.mq;
 });
 mqTotali=+mqTotali.toFixed(2);
 html+=`<div class="prev-total-box" style="margin-top:1rem;">
-<div class="pt-row"><span>${lista.length} element${lista.length===1?'o':'i'} configurati</span><span>€ ${fmt(totSubtot)}</span></div>`;
-if(sconto!==0) html+=`<div class="pt-row" style="color:${sconto>0?'#8ecfaa':'#f4a460'};"><span>${sconto>0?'Sconto':'Ricarico'} ${Math.abs(sconto*100).toFixed(1)}%</span><span>${sconto>0?'− ':'+ '}€ ${fmt(Math.abs(scontoEur))}</span></div>`;
-html+=`<div class="pt-row"><span>Imponibile</span><span>€ ${fmt(imponibile)}</span></div>
-<div class="pt-row"><span>IVA ${(ivaRate*100).toFixed(0)}%${ivaRate===0.10?' (manut. straordinaria)':''}</span><span>€ ${fmt(ivaEur)}</span></div>
-<div class="pt-row final"><span>TOTALE</span><span>€ ${fmt(totale)}</span></div>
+<div class="pt-row" style="font-size:12px;color:var(--muted);">${lista.length} element${lista.length===1?'o':'i'} configurati</div>
+${listaVetrate.length>0?`
+<div class="pt-row" style="\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x31\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b\x74\x65\x78\x74\x2d\x74\x72\x61\x6e\x73\x66\x6f\x72\x6d\x3a\x75\x70\x70\x65\x72\x63\x61\x73\x65\x3b\x6c\x65\x74\x74\x65\x72\x2d\x73\x70\x61\x63\x69\x6e\x67\x3a\x2e\x30\x35\x65\x6d\x3b\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x75\x74\x65\x64\x29\x3b\x70\x61\x64\x64\x69\x6e\x67\x2d\x74\x6f\x70\x3a\x34\x70\x78\x3b">Vetrate e complementi</div>
+<div class="pt-row"><span>Subtotale</span><span>€ ${fmt(totSubtotVet)}</span></div>
+${sconto!==0?`<div class="pt-row" style="color:${sconto>0?'#8ecfaa':'#f4a460'};"><span>${sconto>0?'Sconto':'Ricarico'} ${Math.abs(sconto*100).toFixed(1)}%</span><span>${sconto>0?'− ':'+ '}€ ${fmt(Math.abs(scontoEurVet))}</span></div>`:''}
+<div class="pt-row"><span>Imponibile</span><span>€ ${fmt(imponibileVet)}</span></div>
+<div class="pt-row" style="\x6f\x70\x61\x63\x69\x74\x79\x3a\x2e\x37\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x32\x70\x78\x3b"><span>IVA ${(ivaRate*100).toFixed(0)}%${ivaRate===0.10?'\x20\x28\x6d\x61\x6e\x75\x74\x2e\x20\x73\x74\x72\x61\x6f\x72\x64\x69\x6e\x61\x72\x69\x61\x29':''}</span><span>€ ${fmt(ivaEurVet)}</span></div>
+<div class="pt-row" style="\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b"><span>Totale vetrate</span><span>€ ${fmt(totaleVet)}</span></div>
+`:''}
+${listaPergole.length>0?`
+<div class="pt-row" style="\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x31\x70\x78\x3b\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b\x74\x65\x78\x74\x2d\x74\x72\x61\x6e\x73\x66\x6f\x72\x6d\x3a\x75\x70\x70\x65\x72\x63\x61\x73\x65\x3b\x6c\x65\x74\x74\x65\x72\x2d\x73\x70\x61\x63\x69\x6e\x67\x3a\x2e\x30\x35\x65\x6d\x3b\x63\x6f\x6c\x6f\x72\x3a\x76\x61\x72\x28\x2d\x2d\x6d\x75\x74\x65\x64\x29\x3b\x70\x61\x64\x64\x69\x6e\x67\x2d\x74\x6f\x70\x3a\x36\x70\x78\x3b\x62\x6f\x72\x64\x65\x72\x2d\x74\x6f\x70\x3a\x31\x70\x78\x20\x64\x61\x73\x68\x65\x64\x20\x76\x61\x72\x28\x2d\x2d\x62\x64\x72\x2d\x6c\x74\x29\x3b">🌿 Pergole Bioclimatiche</div>
+<div class="pt-row"><span>Subtotale</span><span>€ ${fmt(totSubtotPerg)}</span></div>
+${scontoPgRate!==0?`<div class="pt-row" style="color:${scontoPgRate>0?'#8ecfaa':'#f4a460'};"><span>${scontoPgRate>0?'Sconto':'Ricarico'} ${Math.abs(scontoPgRate*100).toFixed(1)}%</span><span>${scontoPgRate>0?'− ':'+ '}€ ${fmt(Math.abs(scontoEurPerg))}</span></div>`:''}
+<div class="pt-row"><span>Imponibile</span><span>€ ${fmt(imponibilePerg)}</span></div>
+<div class="pt-row" style="\x6f\x70\x61\x63\x69\x74\x79\x3a\x2e\x37\x3b\x66\x6f\x6e\x74\x2d\x73\x69\x7a\x65\x3a\x31\x32\x70\x78\x3b"><span>IVA ${(ivaPgRate*100).toFixed(0)}%${ivaPgRate===0.10?'\x20\x28\x6d\x61\x6e\x75\x74\x2e\x20\x73\x74\x72\x61\x6f\x72\x64\x69\x6e\x61\x72\x69\x61\x29':''}</span><span>€ ${fmt(ivaEurPerg)}</span></div>
+<div class="pt-row" style="\x66\x6f\x6e\x74\x2d\x77\x65\x69\x67\x68\x74\x3a\x36\x30\x30\x3b"><span>Totale pergole</span><span>€ ${fmt(totalePerg)}</span></div>
+`:''}
+<div class="pt-row final" style="border-top:2px solid var(--bdr);margin-top:4px;"><span>TOTALE GENERALE</span><span>€ ${fmt(totale)}</span></div>
 </div>`;
 const _pag = (function(){
 const acc1tipo = (document.getElementById('\x70\x61\x67\x2d\x61\x63\x63\x31\x2d\x74\x69\x70\x6f')||{value:'pct'}).value;
