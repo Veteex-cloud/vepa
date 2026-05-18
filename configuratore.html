@@ -1875,6 +1875,7 @@ document.querySelectorAll('.tab').forEach(function(b,i){
 if(['prev','tec','perg'][i]===t) b.classList.add('on');
 });
 }
+console.log('\x5b\x67\x6f\x54\x61\x62\x5d\x20\x74\x3d'+t+' panEl='+!!panEl+'\x20\x70\x61\x6e\x45\x6c\x2e\x64\x69\x73\x70\x6c\x61\x79\x3d'+(panEl?panEl.style.display:'N/A'));
 if(t==='prev'){ renderLista(); renderPrev(); }
 if(t==='perg'){ setTimeout(function(){ calcPergola(); }, 50); }
 }
