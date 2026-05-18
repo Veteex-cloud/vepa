@@ -3265,6 +3265,11 @@ if(tbEl) tbEl.classList.add('on');
 window.scrollTo(0,0);
 setTimeout(function(){ calcPergola(); }, 100);
 }
+function aggiornaLedLati(){
+var tipo = (document.getElementById('\x70\x67\x2d\x6c\x65\x64\x2d\x70\x65\x72\x69')||{value:'no'}).value;
+var wrap = document.getElementById('\x70\x67\x2d\x6c\x65\x64\x2d\x6c\x61\x74\x69\x2d\x77\x72\x61\x70');
+if(wrap) wrap.style.display = tipo !== 'no' ? '' : 'none';
+}
 function calcPergola(){
 try {
 var larg = +document.getElementById('pg-larg').value;
