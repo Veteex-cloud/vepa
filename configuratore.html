@@ -1837,9 +1837,17 @@ ${btnModifica}
 function goTab(t){
 document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
 document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
-document.getElementById('pan-'+t).classList.add('on');
-document.querySelectorAll('.tab').forEach((b,i)=>{if(['prev','tec'][i]===t)b.classList.add('on');});
+var panEl=document.getElementById('pan-'+t);
+if(panEl) panEl.classList.add('on');
+var tabEl=document.getElementById('t-'+t);
+if(tabEl) tabEl.classList.add('on');
+if(!tabEl){
+document.querySelectorAll('.tab').forEach(function(b,i){
+if(['prev','tec','perg'][i]===t) b.classList.add('on');
+});
+}
 if(t==='prev'){ renderLista(); renderPrev(); }
+if(t==='perg'){ calcPergola(); }
 }
 const VETRO_LBL={
 nt:'\x35\x35\x2e\x32\x20\x66\x6c\x6f\x61\x74\x20\x6e\x6f\x6e\x20\x74\x65\x6d\x70\x72\x61\x74\x6f', t:'\x35\x35\x2e\x32\x20\x74\x65\x6d\x70\x72\x61\x74\x6f\x20\x46\x54',
